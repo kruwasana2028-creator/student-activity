@@ -373,7 +373,7 @@ function processActivitySheet() {
   var dataPayload = { id: id, prefix: prefix, name: name, no: no, section: section, room: room, score: score };
   
   // ลิงก์ยิง API ไปยัง Web App URL ที่กำหนด
-  var webAppUrl = "https://script.google.com/macros/s/AKfycbxkgG7lzws2rOLm_jGqDPSQ2XXdcHSDVOgZbLevnjNjPw4aCimxH3coyamyOo7oA_tH/exec";
+  var webAppUrl = "https://script.google.com/macros/s/AKfycbyNZrE9jwxvHBbSbtwm2SNshhOeYMDTGUl7UxgSXcfhUZt9nTWtq1qtViW4LlOivejX/exec";
   
   google.script.run.withSuccessHandler(function(serverMessage) {
      alert("🚀 " + serverMessage);
