@@ -71,7 +71,7 @@
       </div>
       <div>
         <label>6. ห้อง <span class="required">*</span></label>
-        <input type="text" id="student_room" placeholder="เช่น 1" required>
+        <input type="text" id="student_room" placeholder="เช่น ม.4/1" required>
       </div>
     </div>
   </div>
@@ -151,11 +151,11 @@ function processActivitySheet() {
   if (document.getElementById('q15').value.trim() === keyAnswers.q15 && document.getElementById('q16').value.trim() === keyAnswers.q16 && document.getElementById('q17').value.trim() === keyAnswers.q17 && document.getElementById('q18').value.trim() === keyAnswers.q18 && document.getElementById('q19').value.trim() === keyAnswers.q19 && document.getElementById('q20').value.trim() === keyAnswers.q20) { score++; }
   if (document.getElementById('q21').value.trim() === keyAnswers.q21 && document.getElementById('q22').value.trim() === keyAnswers.q22 && document.getElementById('q23').value.trim() === keyAnswers.q23 && document.getElementById('q24').value.trim() === keyAnswers.q24 && document.getElementById('q25').value.trim() === keyAnswers.q25 && document.getElementById('q26').value.trim() === keyAnswers.q26) { score++; }
 
-  alert("📊 ประมวลผลสำเร็จ!\nคะแนนที่ได้ทั้งหมด: " + score + ");
+  alert("📊 ประมวลผลสำเร็จ!\nคะแนนที่ได้ทั้งหมด: " + score + " / 5 คะแนน");
 
   var dataPayload = { id: id, prefix: prefix, name: name, no: no, section: section, room: room, score: String(score) };
   
-  var webAppUrl = "https://script.google.com/macros/s/AKfycbwDzVlxjWkOI5gGKnFF7KembP-eea6wzPxsfZ-3z1JaIyQZy8gNyku-PYhJJtI2VChy/exec";
+  var webAppUrl = "https://script.google.com/macros/s/AKfycbxkgG7lzws2rOLm_jGqDPSQ2XXdcHSDVOgZbLevnjNjPw4aCimxH3coyamyOo7oA_tH/exec";
   
   var btn = document.getElementById("submitBtn");
   btn.disabled = true;
