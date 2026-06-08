@@ -3,9 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <title>ใบกิจกรรมที่ 2.1 การทำซ้ำ</title>
+  <!-- นำเข้า SweetAlert2 เพื่อใช้ป๊อปอัปสรุปคะแนนที่สวยงาม -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
     body { font-family: 'Prompt', 'Arial', sans-serif; margin: 0; padding: 15px; line-height: 1.6; background-color: #fff4eb; color: #4a3c31; }
-    .container { max-width: 900px; background: #ffffff; padding: 30px; margin: 10px auto; border-radius: 16px; box-shadow: 0 8px 24px rgba(230, 126, 34, 0.1); border-top: 10px solid #ff9f43; }
+    .container { max-width: 900px; background: #ffffff; padding: 30px; margin: 10px auto; border-radius: 16px; box-shadow: 0 8px 24px rgba(230, 126, 34, 0.1); border-top: 10px solid #ff9f43; position: relative; }
     h2 { text-align: center; color: #d35400; margin-top: 0; font-size: 24px; }
     h3 { color: #e67e22; border-bottom: 2px solid #ffd8be; padding-bottom: 5px; margin-top: 20px; }
     .section { margin-bottom: 20px; padding: 20px; border: 1px solid #ffe0cc; border-radius: 12px; background-color: #fffdfb; }
@@ -28,9 +30,27 @@
     .btn-submit:hover { background-color: #e66700; }
     .required { color: #e74c3c; }
     .hint-text { color: #666; font-size: 13px; font-weight: normal; font-style: italic; }
+    
+    /* สไตล์ระบบเวลา (แสดงเฉพาะตัวเลขเวลาลอย ไม่โชว์คะแนนดิบ) */
+    .time-rule-box { background-color: #fff5f5; border-left: 4px solid #e74c3c; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; }
+    .time-rule-box ul { margin: 5px 0 0 0; padding-left: 20px; }
+    .timer-container { display: none; position: fixed; top: 20px; right: 20px; background: #ffffff; padding: 12px 20px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); border: 2px solid #ff9f43; z-index: 1000; text-align: center; min-width: 120px; }
+    .timer-label { font-size: 12px; font-weight: bold; color: #7f6c5f; text-transform: uppercase; margin-bottom: 2px; }
+    .timer-display { font-size: 26px; font-weight: bold; color: #d35400; font-family: monospace; line-height: 1; }
+    
+    /* จัดแต่งภายในกล่องป๊อปอัปให้ดูง่ายเป็นระเบียบ */
+    .swal-report-box { text-align: left; font-size: 16px; margin-top: 15px; background: #fafafa; padding: 15px; border-radius: 8px; border: 1px solid #eee; }
+    .swal-report-line { display: flex; justify-content: space-between; margin-bottom: 8px; }
+    .swal-report-total { font-size: 18px; font-weight: bold; color: #27ae60; border-top: 2px dashed #ddd; padding-top: 8px; margin-top: 8px; }
   </style>
 </head>
 <body>
+
+<!-- ส่วนแสดงผลนาฬิกาลอยบนหน้าจอ (ซ่อนส่วนคะแนนไว้ จะโชว์แค่เวลาที่เดินอยู่) -->
+<div class="timer-container" id="timerWidget">
+  <div class="timer-label">⏱️ เวลาที่ใช้ไป</div>
+  <div class="timer-display" id="timeCount">00:00</div>
+</div>
 
 <div class="container">
   <h2>ใบกิจกรรมที่ 2.1 การทำซ้ำ</h2>
@@ -76,7 +96,20 @@
     </div>
   </div>
 
-  <p><b>คำชี้แจง:</b> หารายการอาหารที่มีความเหมาะสมที่สุดโดยพิจารณาจากคะแนนในตาราง</p>
+  <div class="time-rule-box">
+    <strong>⏳ คำชี้แจงและเกณฑ์การให้คะแนนเรื่องเวลา:</strong>
+    <p style="margin: 5px 0;">ระบบจะเริ่มจับเวลาทันทีเมื่อนักเรียนเริ่มกรอกคำตอบลงในช่องแรกของกิจกรรม โปรดทำด้วยความซื่อสัตย์ <u>หากสลับไปแท็บอื่นหรือออกจากหน้าต่างนี้ระบบจะทำการแจ้งเตือนทันที</u></p>
+    <ul>
+      <li>ใช้เวลาไม่เกิน <b>15 นาที</b> : ไม่หักคะแนน</li>
+      <li>ใช้เวลาตั้งแต่ <b>17 นาทีขึ้นไป</b> : หัก 1 คะแนน</li>
+      <li>ใช้เวลาตั้งแต่ <b>19 นาทีขึ้นไป</b> : หัก 2 คะแนน</li>
+      <li>ใช้เวลาตั้งแต่ <b>21 นาทีขึ้นไป</b> : หัก 3 คะแนน</li>
+      <li>ใช้เวลาตั้งแต่ <b>23 นาทีขึ้นไป</b> : หัก 4 คะแนน</li>
+      <li>ใช้เวลาตั้งแต่ <b>25 นาทีขึ้นไป</b> : หัก 5 คะแนน (คะแนนสุทธิต่ำสุดคือ 0 คะแนน)</li>
+    </ul>
+  </div>
+
+  <p><b>คำชี้แจงกิจกรรม:</b> หารายการอาหารที่มีความเหมาะสมที่สุดโดยพิจารณาจากคะแนนในตาราง</p>
 
   <table>
     <thead>
@@ -102,11 +135,11 @@
     <p style="color: #d35400; font-weight: bold;">⚠️ ข้อแนะนำการตอบ: ช่องที่เติมค่าตัวเลขให้ตอบเป็นตัวเลข (เช่น 1 หรือ 6.2) / ช่องที่เปรียบเทียบให้พิมพ์คำว่า "มากกว่า", "น้อยกว่า" หรือ "เท่ากับ" เท่านั้น</p>
     <hr style="border: 0; border-top: 1px solid #ffd8be; margin-bottom: 15px;">
 
-    <p>1. ตัวแปร x มีค่าเท่ากับ 1 ให้ S<sub>max</sub> แทนคะแนนของอาหารลำดับที่ <input type="text" id="q1" class="answer-input" onchange="checkRealtime('q1')" placeholder="ตัวเลข"> เท่ากับ <input type="text" id="q2" class="answer-input" onchange="checkRealtime('q2')" placeholder="ตัวเลข"> <span class="hint-text">(เติมตัวเลข)</span></p>
+    <p>1. ตัวแปร x มีค่าเท่ากับ 1 ให้ S<sub>max</sub> แทนคะแนนของอาหารลำดับที่ <input type="text" id="q1" class="answer-input" oninput="startTimerOnce()" onchange="checkRealtime('q1')" placeholder="ตัวเลข"> เท่ากับ <input type="text" id="q2" class="answer-input" onchange="checkRealtime('q2')" placeholder="ตัวเลข"> <span class="hint-text">(เติมตัวเลข)</span></p>
     
     <p>2. <b>รอบแรก</b> พิจารณาอาหารลำดับที่ y เป็นข้อมูลอาหารลำดับที่ <input type="text" id="q3" class="answer-input" onchange="checkRealtime('q3')" placeholder="ตัวเลข"> ในรายการ นั่นคือ S = <input type="text" id="q4" class="answer-input" onchange="checkRealtime('q4')" placeholder="ตัวเลข"> <br>S<sub>max</sub> = <input type="text" id="q5" class="answer-input" onchange="checkRealtime('q5')" placeholder="ตัวเลข"> ซึ่ง S <input type="text" id="q6" class="answer-input" onchange="checkRealtime('q6')" placeholder="เปรียบเทียบ"> S<sub>max</sub>, x = <input type="text" id="q7" class="answer-input" onchange="checkRealtime('q7')" placeholder="ตัวเลข">, S<sub>max</sub> = <input type="text" id="q8" class="answer-input" onchange="checkRealtime('q8')" placeholder="ตัวเลข"> <br><span class="hint-text">(ช่องเปรียบเทียบเติม: มากกว่า / น้อยกว่า / เท่ากับ)</span></p>
     
-    <p>3. <b>รอบที่สี่</b> พิจารณาอาหารลำดับที่ y เป็นข้อมูลอาหารลำดับที่ <input type="text" id="q9" class="answer-input" onchange="checkRealtime('q9')" placeholder="ตัวเลข"> ในรายการ นั่นคือ S = <input type="text" id="q10" class="answer-input" onchange="checkRealtime('q10')" placeholder="ตัวเลข"><br>S<sub>max</sub> = <input type="text" id="q11" class="answer-input" onchange="checkRealtime('q11')" placeholder="ตัวเลข"> ซึ่ง S <input type="text" id="q12" class="answer-input" onchange="checkRealtime('q12')" placeholder="เปรียบเทียบ"> S<sub>max</sub>, x = <input type="text" id="q13" class="answer-input" onchange="checkRealtime('q13')" placeholder="ตัวเลข">, S<sub>max</sub> = <input type="text" id="q14" class="answer-input" onchange="checkRealtime('q14')" placeholder="ตัวเลข"> <br><span class="hint-text">(ช่องเปรียบเทียบเติม: มากกว่า / น้อยกว่า / เท่ากับ)</span></p>
+    <p>3. <b>รอบที่สอง</b> พิจารณาอาหารลำดับที่ y เป็นข้อมูลอาหารลำดับที่ <input type="text" id="q9" class="answer-input" onchange="checkRealtime('q9')" placeholder="ตัวเลข"> ในรายการ นั่นคือ S = <input type="text" id="q10" class="answer-input" onchange="checkRealtime('q10')" placeholder="ตัวเลข"><br>S<sub>max</sub> = <input type="text" id="q11" class="answer-input" onchange="checkRealtime('q11')" placeholder="ตัวเลข"> ซึ่ง S <input type="text" id="q12" class="answer-input" onchange="checkRealtime('q12')" placeholder="เปรียบเทียบ"> S<sub>max</sub>, x = <input type="text" id="q13" class="answer-input" onchange="checkRealtime('q13')" placeholder="ตัวเลข">, S<sub>max</sub> = <input type="text" id="q14" class="answer-input" onchange="checkRealtime('q14')" placeholder="ตัวเลข"> <br><span class="hint-text">(ช่องเปรียบเทียบเติม: มากกว่า / น้อยกว่า / เท่ากับ)</span></p>
     
     <p>4. <b>รอบที่สาม</b> พิจารณาอาหารลำดับที่ y เป็นข้อมูลอาหารลำดับที่ <input type="text" id="q15" class="answer-input" onchange="checkRealtime('q15')" placeholder="ตัวเลข"> ในรายการ นั่นคือ S = <input type="text" id="q16" class="answer-input" onchange="checkRealtime('q16')" placeholder="ตัวเลข"> <br>S<sub>max</sub> = <input type="text" id="q17" class="answer-input" onchange="checkRealtime('q17')" placeholder="ตัวเลข"> ซึ่ง S <input type="text" id="q18" class="answer-input" onchange="checkRealtime('q18')" placeholder="เปรียบเทียบ"> S<sub>max</sub> ดังนั้น x = <input type="text" id="q19" class="answer-input" onchange="checkRealtime('q19')" placeholder="ตัวเลข">, S<sub>max</sub> = <input type="text" id="q20" class="answer-input" onchange="checkRealtime('q20')" placeholder="ตัวเลข"> <br><span class="hint-text">(ช่องเปรียบเทียบเติม: มากกว่า / น้อยกว่า / เท่ากับ)</span></p>
     
@@ -126,14 +159,69 @@ var keyAnswers = {
   q21: "4", q22: "6.8", q23: "7.2", q24: "น้อยกว่า", q25: "7.2", q26: "3"
 };
 
+var timerInterval = null;
+var totalSeconds = 0;
+var isTimerStarted = false;
+
+// 1. ตรวจสอบพฤติกรรมการสลับแท็บ
+document.addEventListener("visibilitychange", function() {
+  if (document.hidden) {
+    Swal.fire({ icon: 'warning', title: 'คำเตือน!', text: 'กรุณาอย่าเปิดแท็บอื่นหรือออกจากหน้าต่างใบงานนี้ขณะทำกิจกรรมครับ' });
+  }
+});
+
+// 2. เริ่มจับเวลา
+function startTimerOnce() {
+  if (!isTimerStarted) {
+    isTimerStarted = true;
+    document.getElementById("timerWidget").style.display = "block";
+    timerInterval = setInterval(updateTimer, 1000);
+  }
+}
+
+function updateTimer() {
+  totalSeconds++;
+  var minutes = Math.floor(totalSeconds / 60);
+  var seconds = totalSeconds % 60;
+  
+  var displayMin = minutes < 10 ? "0" + minutes : minutes;
+  var displaySec = seconds < 10 ? "0" + seconds : seconds;
+  document.getElementById("timeCount").innerText = displayMin + ":" + displaySec;
+}
+
+// ฟังก์ชันนับคะแนนดิบทั้งหมดในขณะนั้น
+function calculateCurrentBaseScore() {
+  var bScore = 0;
+  if (document.getElementById('q1').value.trim() === keyAnswers.q1 && document.getElementById('q2').value.trim() === keyAnswers.q2) { bScore++; }
+  if (document.getElementById('q3').value.trim() === keyAnswers.q3 && document.getElementById('q4').value.trim() === keyAnswers.q4 && document.getElementById('q5').value.trim() === keyAnswers.q5 && document.getElementById('q6').value.trim() === keyAnswers.q6 && document.getElementById('q7').value.trim() === keyAnswers.q7 && document.getElementById('q8').value.trim() === keyAnswers.q8) { bScore++; }
+  if (document.getElementById('q9').value.trim() === keyAnswers.q9 && document.getElementById('q10').value.trim() === keyAnswers.q10 && document.getElementById('q11').value.trim() === keyAnswers.q11 && document.getElementById('q12').value.trim() === keyAnswers.q12 && document.getElementById('q13').value.trim() === keyAnswers.q13 && document.getElementById('q14').value.trim() === keyAnswers.q14) { bScore++; }
+  if (document.getElementById('q15').value.trim() === keyAnswers.q15 && document.getElementById('q16').value.trim() === keyAnswers.q16 && document.getElementById('q17').value.trim() === keyAnswers.q17 && document.getElementById('q18').value.trim() === keyAnswers.q18 && document.getElementById('q19').value.trim() === keyAnswers.q19 && document.getElementById('q20').value.trim() === keyAnswers.q20) { bScore++; }
+  if (document.getElementById('q21').value.trim() === keyAnswers.q21 && document.getElementById('q22').value.trim() === keyAnswers.q22 && document.getElementById('q23').value.trim() === keyAnswers.q23 && document.getElementById('q24').value.trim() === keyAnswers.q24 && document.getElementById('q25').value.trim() === keyAnswers.q25 && document.getElementById('q26').value.trim() === keyAnswers.q26) { bScore++; }
+  return bScore;
+}
+
+function calculatePenalty(minutes) {
+  if (minutes >= 25) return 5;
+  if (minutes >= 23) return 4;
+  if (minutes >= 21) return 3;
+  if (minutes >= 19) return 2;
+  if (minutes >= 17) return 1;
+  return 0;
+}
+
 function checkRealtime(inputId) {
   var inputEl = document.getElementById(inputId);
   var studentValue = inputEl.value.trim();
   if (studentValue === "") { inputEl.classList.remove("input-error"); return; }
-  if (studentValue === keyAnswers[inputId]) { inputEl.classList.remove("input-error"); } 
-  else { inputEl.classList.add("input-error"); alert("❌ คำตอบยังไม่ถูกต้อง! ลองตรวจสอบผลลัพธ์ใหม่อีกครั้งครับ"); }
+  if (studentValue === keyAnswers[inputId]) { 
+    inputEl.classList.remove("input-error"); 
+  } else { 
+    inputEl.classList.add("input-error"); 
+    Swal.fire({ icon: 'error', title: 'คำตอบยังไม่ถูกต้อง', text: 'ลองตรวจสอบและคำนวณใหม่อีกครั้งครับ' });
+  }
 }
 
+// 3. ป๊อปอัปแจ้งผลคะแนนและการทำงานเมื่อส่งข้อมูลสำเร็จ
 function processActivitySheet() {
   var id = document.getElementById('student_id').value.trim();
   var prefix = document.getElementById('prefix').value;
@@ -142,24 +230,42 @@ function processActivitySheet() {
   var section = document.getElementById('student_section').value;
   var room = document.getElementById('student_room').value.trim();
   
-  if (!id || !prefix || !name || !no || !section || !room) { alert("⚠️ กรุณากรอกข้อมูลนักเรียนให้ครบถ้วนก่อนส่งใบงานนะครับ!"); return; }
+  if (!id || !prefix || !name || !no || !section || !room) { 
+    Swal.fire({ icon: 'warning', title: 'ข้อมูลไม่ครบถ้วน', text: 'กรุณากรอกข้อมูลนักเรียนให้ครบถ้วนก่อนส่งใบงานนะครับ' });
+    return; 
+  }
   
-  var score = 0;
-  if (document.getElementById('q1').value.trim() === keyAnswers.q1 && document.getElementById('q2').value.trim() === keyAnswers.q2) { score++; }
-  if (document.getElementById('q3').value.trim() === keyAnswers.q3 && document.getElementById('q4').value.trim() === keyAnswers.q4 && document.getElementById('q5').value.trim() === keyAnswers.q5 && document.getElementById('q6').value.trim() === keyAnswers.q6 && document.getElementById('q7').value.trim() === keyAnswers.q7 && document.getElementById('q8').value.trim() === keyAnswers.q8) { score++; }
-  if (document.getElementById('q9').value.trim() === keyAnswers.q9 && document.getElementById('q10').value.trim() === keyAnswers.q10 && document.getElementById('q11').value.trim() === keyAnswers.q11 && document.getElementById('q12').value.trim() === keyAnswers.q12 && document.getElementById('q13').value.trim() === keyAnswers.q13 && document.getElementById('q14').value.trim() === keyAnswers.q14) { score++; }
-  if (document.getElementById('q15').value.trim() === keyAnswers.q15 && document.getElementById('q16').value.trim() === keyAnswers.q16 && document.getElementById('q17').value.trim() === keyAnswers.q17 && document.getElementById('q18').value.trim() === keyAnswers.q18 && document.getElementById('q19').value.trim() === keyAnswers.q19 && document.getElementById('q20').value.trim() === keyAnswers.q20) { score++; }
-  if (document.getElementById('q21').value.trim() === keyAnswers.q21 && document.getElementById('q22').value.trim() === keyAnswers.q22 && document.getElementById('q23').value.trim() === keyAnswers.q23 && document.getElementById('q24').value.trim() === keyAnswers.q24 && document.getElementById('q25').value.trim() === keyAnswers.q25 && document.getElementById('q26').value.trim() === keyAnswers.q26) { score++; }
+  if (timerInterval) { clearInterval(timerInterval); }
 
-  alert("📊 ประมวลผลสำเร็จ!\nคะแนนที่ได้ทั้งหมด: " + score + " / 5 คะแนน");
+  var baseScore = calculateCurrentBaseScore();
+  var finalMinutes = Math.floor(totalSeconds / 60);
+  var penalty = calculatePenalty(finalMinutes);
+  var finalScore = baseScore - penalty;
+  if (finalScore < 0) finalScore = 0;
 
-  var dataPayload = { id: id, prefix: prefix, name: name, no: no, section: section, room: room, score: String(score) };
+  var timeString = finalMinutes + " นาที " + (totalSeconds % 60) + " วินาที";
   
-  var webAppUrl = "https://script.google.com/macros/s/AKfycbyH3zvx1WGt2A2wxZye-_0lyw9sfYYZiquN8dE8qjCtYyR0oySCXTxkKDL5p7vTZJCDgQ/exec";
+  // สร้างโครงสร้าง HTML สำหรับไปแสดงผลรายละเอียดคะแนนในป๊อปอัป
+  var reportHtml = `
+    <div class="swal-report-box">
+      <div class="swal-report-line"><span>📝 คะแนนจากใบงาน:</span> <b>${baseScore} / 5 คะแนน</b></div>
+      <div class="swal-report-line"><span>⏳ เวลาที่ใช้ไปทั้งหมด:</span> <b>${timeString}</b></div>
+      <div class="swal-report-line" style="color: #c0392b;"><span>❌ คะแนนที่ถูกหักจากเวลา:</span> <b>-${penalty} คะแนน</b></div>
+      <div class="swal-report-line swal-report-total"><span>🎯 คะแนนสุทธิที่ได้:</span> <span>${finalScore} / 5 คะแนน</span></div>
+    </div>
+  `;
+
+  var dataPayload = { 
+    id: id, prefix: prefix, name: name, no: no, section: section, room: room, 
+    score: String(finalScore), time_used: timeString, penalty_score: String(penalty) 
+  };
+  
+  // 🔴 อย่าลืมเปลี่ยน URL ตรงนี้ให้เป็นลิงก์ Web App ของคุณเองที่ได้จาก Google Apps Script ครับ
+  var webAppUrl = "https://script.google.com/macros/s/AKfycbzrTik45ZdpT_5X5csA5rDr_zOs6LiHospZ0kmBw7uba2-9Zbyt4sC1ZYS3I7O3nQsruQ/exec";
   
   var btn = document.getElementById("submitBtn");
   btn.disabled = true;
-  btn.innerText = "กำลังส่งคำตอบ...";
+  btn.innerText = "กำลังส่งคำตอบและบันทึกลง Google ชีต...";
 
   fetch(webAppUrl, {
     method: "POST",
@@ -168,10 +274,20 @@ function processActivitySheet() {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(dataPayload)
   }).then(function() {
-     alert("🚀 ส่งคำตอบและบันทึกข้อมูลลง Google ชีตสำเร็จแล้ว!");
-     location.reload();
+     // เมื่อส่งสำเร็จ บังคับโชว์ป๊อปอัปรายงานคะแนนอย่างละเอียดทันที
+     Swal.fire({
+       icon: 'success',
+       title: 'ส่งคำตอบสำเร็จและบันทึกข้อมูลเรียบร้อย!',
+       html: reportHtml,
+       confirmButtonText: 'ตกลง',
+       allowOutsideClick: false
+     }).then((result) => {
+       if (result.isConfirmed) {
+         location.reload(); // รีเฟรชหน้ากระดาษใบงานใหม่หลังจากเด็กกดปุ่มตกลงบนหน้าจอ
+       }
+     });
   }).catch(function(error) {
-     alert("เกิดข้อผิดพลาดในการส่งข้อมูล: " + error);
+     Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: 'ไม่สามารถส่งข้อมูลได้: ' + error });
      btn.disabled = false;
      btn.innerText = "ส่งคำตอบ";
   });
