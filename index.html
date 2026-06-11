@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>ใบกิจกรรมที่ 2.1 การทำซ้ำ</title>
+  <title>ใบกิจกรรมที่ 2.1 การทำซ้ำ (แก้ไขระบบสุ่มโจทย์)</title>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
     body { font-family: 'Prompt', 'Arial', sans-serif; margin: 0; padding: 15px; line-height: 1.6; background-color: #fff4eb; color: #4a3c31; }
@@ -131,13 +131,13 @@
 
     <p>1. ตัวแปร x มีค่าเท่ากับ 1 ให้ S<sub>max</sub> แทนคะแนนของอาหารลำดับที่ <input type="text" id="q1" class="answer-input" oninput="startTimerOnce()" onchange="checkRealtime('q1')" placeholder="ตัวเลข"> เท่ากับ <input type="text" id="q2" class="answer-input" onchange="checkRealtime('q2')" placeholder="ตัวเลข"> <span class="hint-text">(เติมตัวเลข)</span></p>
     
-    <p>2. <b>รอบแรก</b> พิจารณาอาหารลำดับที่ y เป็นข้อมูลอาหารลำดับที่ <input type="text" id="q3" class="answer-input" onchange="checkRealtime('q3')" placeholder="ตัวเลข"> ในรายการ นั่นคือ S = <input type="text" id="q4" class="answer-input" onchange="checkRealtime('q4')" placeholder="ตัวเลข"> <br>S<sub>max</sub> = <input type="text" id="q5" class="answer-input" onchange="checkRealtime('q5')" placeholder="ตัวเลข"> ซึ่ง S <input type="text" id="q6" class="answer-input" onchange="checkRealtime('q6')" placeholder="เปรียบเทียบ"> S<sub>max</sub>, x = <input type="text" id="q7" class="answer-input" onchange="checkRealtime('q7')" placeholder="ตัวเลข">, S<sub>max</sub> = <input type="text" id="q8" class="answer-input" onchange="checkRealtime('q8')" placeholder="ตัวเลข"> <br><span class="hint-text">(ช่องเปรียบเทียบเติม: มากกว่า / น้อยกว่า / เท่ากับ)</span></p>
+    <p>2. <b>รอบแรก (y = 1)</b> พิจารณาอาหารลำดับที่ y เป็นข้อมูลอาหารลำดับที่ <input type="text" id="q3" class="answer-input" onchange="checkRealtime('q3')" placeholder="ตัวเลข"> ในรายการ นั่นคือ S = <input type="text" id="q4" class="answer-input" onchange="checkRealtime('q4')" placeholder="ตัวเลข"> <br>S<sub>max</sub> = <input type="text" id="q5" class="answer-input" onchange="checkRealtime('q5')" placeholder="ตัวเลข"> ซึ่ง S <input type="text" id="q6" class="answer-input" onchange="checkRealtime('q6')" placeholder="เปรียบเทียบ"> S<sub>max</sub>, x = <input type="text" id="q7" class="answer-input" onchange="checkRealtime('q7')" placeholder="ตัวเลข">, S<sub>max</sub> = <input type="text" id="q8" class="answer-input" onchange="checkRealtime('q8')" placeholder="ตัวเลข"> <br><span class="hint-text">(ช่องเปรียบเทียบเติม: มากกว่า / น้อยกว่า / เท่ากับ)</span></p>
     
-    <p>3. <b>รอบที่สอง</b> พิจารณาอาหารลำดับที่ y เป็นข้อมูลอาหารลำดับที่ <input type="text" id="q9" class="answer-input" onchange="checkRealtime('q9')" placeholder="ตัวเลข"> ในรายการ นั่นคือ S = <input type="text" id="q10" class="answer-input" onchange="checkRealtime('q10')" placeholder="ตัวเลข"><br>S<sub>max</sub> = <input type="text" id="q11" class="answer-input" onchange="checkRealtime('q11')" placeholder="ตัวเลข"> ซึ่ง S <input type="text" id="q12" class="answer-input" onchange="checkRealtime('q12')" placeholder="เปรียบเทียบ"> S<sub>max</sub>, x = <input type="text" id="q13" class="answer-input" onchange="checkRealtime('q13')" placeholder="ตัวเลข">, S<sub>max</sub> = <input type="text" id="q14" class="answer-input" onchange="checkRealtime('q14')" placeholder="ตัวเลข"> <br><span class="hint-text">(ช่องเปรียบเทียบเติม: มากกว่า / น้อยกว่า / เท่ากับ)</span></p>
+    <p>3. <b>รอบที่สอง (y = 2)</b> พิจารณาอาหารลำดับที่ y เป็นข้อมูลอาหารลำดับที่ <input type="text" id="q9" class="answer-input" onchange="checkRealtime('q9')" placeholder="ตัวเลข"> ในรายการ นั่นคือ S = <input type="text" id="q10" class="answer-input" onchange="checkRealtime('q10')" placeholder="ตัวเลข"><br>S<sub>max</sub> = <input type="text" id="q11" class="answer-input" onchange="checkRealtime('q11')" placeholder="ตัวเลข"> ซึ่ง S <input type="text" id="q12" class="answer-input" onchange="checkRealtime('q12')" placeholder="เปรียบเทียบ"> S<sub>max</sub>, x = <input type="text" id="q13" class="answer-input" onchange="checkRealtime('q13')" placeholder="ตัวเลข">, S<sub>max</sub> = <input type="text" id="q14" class="answer-input" onchange="checkRealtime('q14')" placeholder="ตัวเลข"> <br><span class="hint-text">(ช่องเปรียบเทียบเติม: มากกว่า / น้อยกว่า / เท่ากับ)</span></p>
     
-    <p>4. <b>รอบที่สาม</b> พิจารณาอาหารลำดับที่ y เป็นข้อมูลอาหารลำดับที่ <input type="text" id="q15" class="answer-input" onchange="checkRealtime('q15')" placeholder="ตัวเลข"> ในรายการ นั่นคือ S = <input type="text" id="q16" class="answer-input" onchange="checkRealtime('q16')" placeholder="ตัวเลข"> <br>S<sub>max</sub> = <input type="text" id="q17" class="answer-input" onchange="checkRealtime('q17')" placeholder="ตัวเลข"> ซึ่ง S <input type="text" id="q18" class="answer-input" onchange="checkRealtime('q18')" placeholder="เปรียบเทียบ"> S<sub>max</sub> ดังนั้น x = <input type="text" id="q19" class="answer-input" onchange="checkRealtime('q19')" placeholder="ตัวเลข">, S<sub>max</sub> = <input type="text" id="q20" class="answer-input" onchange="checkRealtime('q20')" placeholder="ตัวเลข"> <br><span class="hint-text">(ช่องเปรียบเทียบเติม: มากกว่า / น้อยกว่า / เท่ากับ)</span></p>
+    <p>4. <b>รอบที่สาม (y = 3)</b> พิจารณาอาหารลำดับที่ y เป็นข้อมูลอาหารลำดับที่ <input type="text" id="q15" class="answer-input" onchange="checkRealtime('q15')" placeholder="ตัวเลข"> ในรายการ นั่นคือ S = <input type="text" id="q16" class="answer-input" onchange="checkRealtime('q16')" placeholder="ตัวเลข"> <br>S<sub>max</sub> = <input type="text" id="q17" class="answer-input" onchange="checkRealtime('q17')" placeholder="ตัวเลข"> ซึ่ง S <input type="text" id="q18" class="answer-input" onchange="checkRealtime('q18')" placeholder="เปรียบเทียบ"> S<sub>max</sub>, x = <input type="text" id="q19" class="answer-input" onchange="checkRealtime('q19')" placeholder="ตัวเลข">, S<sub>max</sub> = <input type="text" id="q20" class="answer-input" onchange="checkRealtime('q20')" placeholder="ตัวเลข"> <br><span class="hint-text">(ช่องเปรียบเทียบเติม: มากกว่า / น้อยกว่า / เท่ากับ)</span></p>
     
-    <p>5. <b>รอบที่สี่</b> พิจารณาอาหารลำดับที่ y เป็นข้อมูลอาหารลำดับที่ <input type="text" id="q21" class="answer-input" onchange="checkRealtime('q21')" placeholder="ตัวเลข"> ในรายการ นั่นคือ S = <input type="text" id="q22" class="answer-input" onchange="checkRealtime('q22')" placeholder="ตัวเลข"> <br>S<sub>max</sub> = <input type="text" id="q23" class="answer-input" onchange="checkRealtime('q23')" placeholder="ตัวเลข"> ซึ่ง S <input type="text" id="q24" class="answer-input" onchange="checkRealtime('q24')" placeholder="เปรียบเทียบ"> S<sub>max</sub>, x = 3, S<sub>max</sub> = <input type="text" id="q25" class="answer-input" onchange="checkRealtime('q25')" placeholder="ตัวเลข"> <br><span class="hint-text">(ช่องเปรียบเทียบเติม: มากกว่า / น้อยกว่า / เท่ากับ)</span></p>
+    <p>5. <b>รอบที่สี่ (y = 4)</b> พิจารณาอาหารลำดับที่ y เป็นข้อมูลอาหารลำดับที่ <input type="text" id="q21" class="answer-input" onchange="checkRealtime('q21')" placeholder="ตัวเลข"> ในรายการ นั่นคือ S = <input type="text" id="q22" class="answer-input" onchange="checkRealtime('q22')" placeholder="ตัวเลข"> <br>S<sub>max</sub> = <input type="text" id="q23" class="answer-input" onchange="checkRealtime('q23')" placeholder="ตัวเลข"> ซึ่ง S <input type="text" id="q24" class="answer-input" onchange="checkRealtime('q24')" placeholder="เปรียบเทียบ"> S<sub>max</sub>, x = <input type="text" id="q23_x" class="answer-input" onchange="checkRealtime('q23_x')" placeholder="ตัวเลข">, S<sub>max</sub> = <input type="text" id="q25" class="answer-input" onchange="checkRealtime('q25')" placeholder="ตัวเลข"> <br><span class="hint-text">(ช่องเปรียบเทียบเติม: มากกว่า / น้อยกว่า / เท่ากับ)</span></p>
     
     <p>6. อาหารลำดับที่ <input type="text" id="q26" class="answer-input" onchange="checkRealtime('q26')" placeholder="ตัวเลข"> เป็นอาหารที่เหมาะสมที่สุดและจบการทำงาน <span class="hint-text">(เติมตัวเลข)</span></p>
   </div>
@@ -146,7 +146,7 @@
 </div>
 
 <script>
-// คลังโจทย์ 3 ชุดที่มีข้อมูลตารางและเฉลยที่แตกต่างกันอย่างสิ้นเชิง
+// คลังโจทย์ 3 ชุดที่คำนวณ Trace ตารางลูปการทำงานใหม่อย่างละเอียดถี่ถ้วน
 var quizPool = [
   {
     versionName: "(ชุดที่ 1)",
@@ -157,10 +157,11 @@ var quizPool = [
       { id: 4, name: "ข้าวซอยไก่", type: "อาหารหลัก", q: 8, p: 5, price: 30, score: "6.8" }
     ],
     answers: {
-      q1: "1", q2: "6.2", q3: "1", q4: "6.2", q5: "6.2", q6: "เท่ากับ", q7: "1", q8: "6.2",
+      q1: "1", q2: "6.2", 
+      q3: "1", q4: "6.2", q5: "6.2", q6: "เท่ากับ", q7: "1", q8: "6.2",
       q9: "2", q10: "6.0", q11: "6.2", q12: "น้อยกว่า", q13: "1", q14: "6.2",
       q15: "3", q16: "7.2", q17: "6.2", q18: "มากกว่า", q19: "3", q20: "7.2",
-      q21: "4", q22: "6.8", q23: "7.2", q24: "น้อยกว่า", q25: "7.2", q26: "3"
+      q21: "4", q22: "6.8", q23: "7.2", q24: "น้อยกว่า", q23_x: "3", q25: "7.2", q26: "3"
     }
   },
   {
@@ -172,10 +173,11 @@ var quizPool = [
       { id: 4, name: "ข้าวหมูแดง", type: "อาหารหลัก", q: 6, p: 5, price: 40, score: "5.8" }
     ],
     answers: {
-      q1: "1", q2: "7.5", q3: "1", q4: "7.5", q5: "7.5", q6: "เท่ากับ", q7: "1", q8: "7.5",
+      q1: "1", q2: "7.5", 
+      q3: "1", q4: "7.5", q5: "7.5", q6: "เท่ากับ", q7: "1", q8: "7.5",
       q9: "2", q10: "8.4", q11: "7.5", q12: "มากกว่า", q13: "2", q14: "8.4",
       q15: "3", q16: "7.0", q17: "8.4", q18: "น้อยกว่า", q19: "2", q20: "8.4",
-      q21: "4", q22: "5.8", q23: "8.4", q24: "น้อยกว่า", q25: "8.4", q26: "2"
+      q21: "4", q22: "5.8", q23: "8.4", q24: "น้อยกว่า", q23_x: "2", q25: "8.4", q26: "2"
     }
   },
   {
@@ -187,28 +189,25 @@ var quizPool = [
       { id: 4, name: "ข้าวผัดต้มยำ", type: "อาหารหลัก", q: 9, p: 8, price: 50, score: "8.7" }
     ],
     answers: {
-      q1: "1", q2: "6.5", q3: "1", q4: "6.5", q5: "6.5", q6: "เท่ากับ", q7: "1", q8: "6.5",
+      q1: "1", q2: "6.5", 
+      q3: "1", q4: "6.5", q5: "6.5", q6: "เท่ากับ", q7: "1", q8: "6.5",
       q9: "2", q10: "5.9", q11: "6.5", q12: "น้อยกว่า", q13: "1", q14: "6.5",
       q15: "3", q16: "5.5", q17: "6.5", q18: "น้อยกว่า", q19: "1", q20: "6.5",
-      q21: "4", q22: "8.7", q23: "6.5", q24: "มากกว่า", q25: "8.7", q26: "4"
+      q21: "4", q22: "8.7", q23: "6.5", q24: "มากกว่า", q23_x: "4", q25: "8.7", q26: "4"
     }
   }
 ];
 
-// ตัวแปรโกลบอลที่จะเก็บโจทย์ข้อที่ถูกเลือก
 var currentQuiz = null;
 var keyAnswers = {};
 
-// ฟังก์ชันเริ่มต้นที่จะทำงานเมื่อเปิดหน้าเว็บ (ทำการสุ่มโจทย์)
 function initQuiz() {
   var randomIndex = Math.floor(Math.random() * quizPool.length);
   currentQuiz = quizPool[randomIndex];
   keyAnswers = currentQuiz.answers;
 
-  // แสดงเลขชุดโจทย์บนหัวข้อ
   document.getElementById("quiz_version").innerText = currentQuiz.versionName;
 
-  // วาดตารางอาหารใหม่ตามข้อมูลที่สุ่มได้
   var html = "";
   currentQuiz.tableData.forEach(function(item) {
     html += `<tr>
@@ -222,34 +221,20 @@ function initQuiz() {
     </tr>`;
   });
   document.getElementById("foodTableBody").innerHTML = html;
-
-  // ปรับแต่งคำใบ้ในบางรอบกรณีที่ข้อ 5 มีค่าเริ่มต้น x แตกต่างกันตามชุดโจทย์
-  // (ชุดที่ 1 มีค่า x เก่าคือ 3 / ชุดที่ 2 มีค่า x เก่าคือ 2 / ชุดที่ 3 มีค่า x เก่าคือ 1)
-  var round4_text = document.querySelector("p:nth-of-type(5)");
-  if(randomIndex === 0) {
-    round4_text.innerHTML = `5. <b>รอบที่สี่</b> พิจารณาอาหารลำดับที่ y เป็นข้อมูลอาหารลำดับที่ <input type="text" id="q21" class="answer-input" onchange="checkRealtime('q21')" placeholder="ตัวเลข"> ในรายการ นั่นคือ S = <input type="text" id="q22" class="answer-input" onchange="checkRealtime('q22')" placeholder="ตัวเลข"> <br>S<sub>max</sub> = <input type="text" id="q23" class="answer-input" onchange="checkRealtime('q23')" placeholder="ตัวเลข"> ซึ่ง S <input type="text" id="q24" class="answer-input" onchange="checkRealtime('q24')" placeholder="เปรียบเทียบ"> S<sub>max</sub>, x = 3, S<sub>max</sub> = <input type="text" id="q25" class="answer-input" onchange="checkRealtime('q25')" placeholder="ตัวเลข"> <br><span class="hint-text">(ช่องเปรียบเทียบเติม: มากกว่า / น้อยกว่า / เท่ากับ)</span>`;
-  } else if(randomIndex === 1) {
-    round4_text.innerHTML = `5. <b>รอบที่สี่</b> พิจารณาอาหารลำดับที่ y เป็นข้อมูลอาหารลำดับที่ <input type="text" id="q21" class="answer-input" onchange="checkRealtime('q21')" placeholder="ตัวเลข"> ในรายการ นั่นคือ S = <input type="text" id="q22" class="answer-input" onchange="checkRealtime('q22')" placeholder="ตัวเลข"> <br>S<sub>max</sub> = <input type="text" id="q23" class="answer-input" onchange="checkRealtime('q23')" placeholder="ตัวเลข"> ซึ่ง S <input type="text" id="q24" class="answer-input" onchange="checkRealtime('q24')" placeholder="เปรียบเทียบ"> S<sub>max</sub>, x = 2, S<sub>max</sub> = <input type="text" id="q25" class="answer-input" onchange="checkRealtime('q25')" placeholder="ตัวเลข"> <br><span class="hint-text">(ช่องเปรียบเทียบเติม: มากกว่า / น้อยกว่า / เท่ากับ)</span>`;
-  } else if(randomIndex === 2) {
-    round4_text.innerHTML = `5. <b>รอบที่สี่</b> พิจารณาอาหารลำดับที่ y เป็นข้อมูลอาหารลำดับที่ <input type="text" id="q21" class="answer-input" onchange="checkRealtime('q21')" placeholder="ตัวเลข"> ในรายการ นั่นคือ S = <input type="text" id="q22" class="answer-input" onchange="checkRealtime('q22')" placeholder="ตัวเลข"> <br>S<sub>max</sub> = <input type="text" id="q23" class="answer-input" onchange="checkRealtime('q23')" placeholder="ตัวเลข"> ซึ่ง S <input type="text" id="q24" class="answer-input" onchange="checkRealtime('q24')" placeholder="เปรียบเทียบ"> S<sub>max</sub>, x = 1, S<sub>max</sub> = <input type="text" id="q25" class="answer-input" onchange="checkRealtime('q25')" placeholder="ตัวเลข"> <br><span class="hint-text">(ช่องเปรียบเทียบเติม: มากกว่า / น้อยกว่า / เท่ากับ)</span>`;
-  }
 }
 
-// รันฟังก์ชันสุ่มเมื่อโหลดหน้ากระดานสำเร็จ
 window.onload = initQuiz;
 
 var timerInterval = null;
 var totalSeconds = 0;
 var isTimerStarted = false;
 
-// 1. ตรวจสอบพฤติกรรมการสลับแท็บ
 document.addEventListener("visibilitychange", function() {
   if (document.hidden) {
     Swal.fire({ icon: 'warning', title: 'คำเตือน!', text: 'กรุณาอย่าเปิดแท็บอื่นหรือออกจากหน้าต่างใบงานนี้ขณะทำกิจกรรมครับ' });
   }
 });
 
-// 2. เริ่มจับเวลา
 function startTimerOnce() {
   if (!isTimerStarted) {
     isTimerStarted = true;
@@ -262,20 +247,18 @@ function updateTimer() {
   totalSeconds++;
   var minutes = Math.floor(totalSeconds / 60);
   var seconds = totalSeconds % 60;
-  
   var displayMin = minutes < 10 ? "0" + minutes : minutes;
   var displaySec = seconds < 10 ? "0" + seconds : seconds;
   document.getElementById("timeCount").innerText = displayMin + ":" + displaySec;
 }
 
-// ฟังก์ชันนับคะแนนดิบทั้งหมด
 function calculateCurrentBaseScore() {
   var bScore = 0;
   if (document.getElementById('q1').value.trim() === keyAnswers.q1 && document.getElementById('q2').value.trim() === keyAnswers.q2) { bScore++; }
   if (document.getElementById('q3').value.trim() === keyAnswers.q3 && document.getElementById('q4').value.trim() === keyAnswers.q4 && document.getElementById('q5').value.trim() === keyAnswers.q5 && document.getElementById('q6').value.trim() === keyAnswers.q6 && document.getElementById('q7').value.trim() === keyAnswers.q7 && document.getElementById('q8').value.trim() === keyAnswers.q8) { bScore++; }
   if (document.getElementById('q9').value.trim() === keyAnswers.q9 && document.getElementById('q10').value.trim() === keyAnswers.q10 && document.getElementById('q11').value.trim() === keyAnswers.q11 && document.getElementById('q12').value.trim() === keyAnswers.q12 && document.getElementById('q13').value.trim() === keyAnswers.q13 && document.getElementById('q14').value.trim() === keyAnswers.q14) { bScore++; }
   if (document.getElementById('q15').value.trim() === keyAnswers.q15 && document.getElementById('q16').value.trim() === keyAnswers.q16 && document.getElementById('q17').value.trim() === keyAnswers.q17 && document.getElementById('q18').value.trim() === keyAnswers.q18 && document.getElementById('q19').value.trim() === keyAnswers.q19 && document.getElementById('q20').value.trim() === keyAnswers.q20) { bScore++; }
-  if (document.getElementById('q21').value.trim() === keyAnswers.q21 && document.getElementById('q22').value.trim() === keyAnswers.q22 && document.getElementById('q23').value.trim() === keyAnswers.q23 && document.getElementById('q24').value.trim() === keyAnswers.q24 && document.getElementById('q25').value.trim() === keyAnswers.q25 && document.getElementById('q26').value.trim() === keyAnswers.q26) { bScore++; }
+  if (document.getElementById('q21').value.trim() === keyAnswers.q21 && document.getElementById('q22').value.trim() === keyAnswers.q22 && document.getElementById('q23').value.trim() === keyAnswers.q23 && document.getElementById('q24').value.trim() === keyAnswers.q24 && document.getElementById('q23_x').value.trim() === keyAnswers.q23_x && document.getElementById('q25').value.trim() === keyAnswers.q25 && document.getElementById('q26').value.trim() === keyAnswers.q26) { bScore++; }
   return bScore;
 }
 
@@ -300,7 +283,6 @@ function checkRealtime(inputId) {
   }
 }
 
-// 3. ป๊อปอัปแจ้งผลคะแนนและการทำงานเมื่อส่งข้อมูลสำเร็จ
 function processActivitySheet() {
   var id = document.getElementById('student_id').value.trim();
   var prefix = document.getElementById('prefix').value;
@@ -337,10 +319,9 @@ function processActivitySheet() {
   var dataPayload = { 
     id: id, prefix: prefix, name: name, no: no, section: section, room: room, 
     score: String(finalScore), time_used: timeString, penalty_score: String(penalty),
-    quiz_version: currentQuiz.versionName // ส่งข้อมูลเวอร์ชันโจทย์เข้าชีตไปด้วย เพื่อตรวจสอบย้อนหลัง
+    quiz_version: currentQuiz.versionName
   };
   
-  // 🔴 เปลี่ยนเป็นลิงก์ Web App ปัจจุบันของคุณที่ได้จาก Google Apps Script ครับ
   var webAppUrl = "https://script.google.com/macros/s/AKfycbxjmu9pFZUbJ-p-NZ313u8zmYWeRBIUC6U4sUlY1iRxSWccXCun2VJDKNMKKiUc0-6tbg/exec";
   
   var btn = document.getElementById("submitBtn");
