@@ -222,6 +222,7 @@ function checkRealtime(inputId) {
 }
 
 // 3. ป๊อปอัปแจ้งผลคะแนนและการทำงานเมื่อส่งข้อมูลสำเร็จ
+// 3. ป๊อปอัปแจ้งผลคะแนนและการทำงานเมื่อส่งข้อมูลสำเร็จ
 function processActivitySheet() {
   var id = document.getElementById('student_id').value.trim();
   var prefix = document.getElementById('prefix').value;
@@ -245,7 +246,6 @@ function processActivitySheet() {
 
   var timeString = finalMinutes + " นาที " + (totalSeconds % 60) + " วินาที";
   
-  // สร้างโครงสร้าง HTML สำหรับไปแสดงผลรายละเอียดคะแนนในป๊อปอัป
   var reportHtml = `
     <div class="swal-report-box">
       <div class="swal-report-line"><span>📝 คะแนนจากใบงาน:</span> <b>${baseScore} / 5 คะแนน</b></div>
@@ -260,21 +260,21 @@ function processActivitySheet() {
     score: String(finalScore), time_used: timeString, penalty_score: String(penalty) 
   };
   
-  // 🔴 อย่าลืมเปลี่ยน URL ตรงนี้ให้เป็นลิงก์ Web App ของคุณเองที่ได้จาก Google Apps Script ครับ
-  var webAppUrl = "https://script.google.com/macros/s/AKfycbzrTik45ZdpT_5X5csA5rDr_zOs6LiHospZ0kmBw7uba2-9Zbyt4sC1ZYS3I7O3nQsruQ/exec";
+  // 🔴 เปลี่ยนเป็นลิงก์ Web App ปัจจุบันของคุณที่ได้จาก Google Apps Script ครับ
+  var webAppUrl = "https://script.google.com/macros/s/AKfycbzmIsZ9QNMiXxlyvWep6gp5Culcbmo61DqtTaJkSfpch9Th9Kq-HF0bzU3dJZw_n8YF5Q/exec";
   
   var btn = document.getElementById("submitBtn");
   btn.disabled = true;
   btn.innerText = "กำลังส่งคำตอบและบันทึกลง Google ชีต...";
 
+  // แก้ไขวิธีการส่งเป็น POST แบบฟอร์มปกติเพื่อทะลวง CORS ของ Google Apps Script
   fetch(webAppUrl, {
     method: "POST",
-    mode: "no-cors",
-    cache: "no-cache",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
     body: JSON.stringify(dataPayload)
-  }).then(function() {
-     // เมื่อส่งสำเร็จ บังคับโชว์ป๊อปอัปรายงานคะแนนอย่างละเอียดทันที
+  })
+  .then(function(response) {
+     // เมื่อส่งสำเร็จ แสดงป๊อปอัปรายงานคะแนน
      Swal.fire({
        icon: 'success',
        title: 'ส่งคำตอบสำเร็จและบันทึกข้อมูลเรียบร้อย!',
@@ -283,10 +283,11 @@ function processActivitySheet() {
        allowOutsideClick: false
      }).then((result) => {
        if (result.isConfirmed) {
-         location.reload(); // รีเฟรชหน้ากระดาษใบงานใหม่หลังจากเด็กกดปุ่มตกลงบนหน้าจอ
+         location.reload(); 
        }
      });
-  }).catch(function(error) {
+  })
+  .catch(function(error) {
      Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: 'ไม่สามารถส่งข้อมูลได้: ' + error });
      btn.disabled = false;
      btn.innerText = "ส่งคำตอบ";
