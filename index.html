@@ -51,7 +51,7 @@
 </div>
 
 <div class="container">
-  <h2>ใบกิจกรรมที่ 2.1 การทำซ้ำ </h2>
+  <h2>ใบกิจกรรมที่ 2.1 การทำซ้ำ</h2>
   
   <div class="section" style="background-color: #fff0e1;">
     <h3>ข้อมูลผู้ทำกิจกรรม</h3>
@@ -205,8 +205,6 @@ function initQuiz() {
   currentQuiz = quizPool[randomIndex];
   keyAnswers = currentQuiz.answers;
 
-  document.getElementById("quiz_version").innerText = currentQuiz.versionName;
-
   var html = "";
   currentQuiz.tableData.forEach(function(item) {
     html += `<tr>
@@ -307,7 +305,6 @@ function processActivitySheet() {
   
   var reportHtml = `
     <div class="swal-report-box">
-      <div class="swal-report-line"><span>📋 ชุดโจทย์ที่ได้:</span> <b>${currentQuiz.versionName}</b></div>
       <div class="swal-report-line"><span>📝 คะแนนจากใบงาน:</span> <b>${baseScore} / 5 คะแนน</b></div>
       <div class="swal-report-line"><span>⏳ เวลาที่ใช้ไปทั้งหมด:</span> <b>${timeString}</b></div>
       <div class="swal-report-line" style="color: #c0392b;"><span>❌ คะแนนที่ถูกหักจากเวลา:</span> <b>-${penalty} คะแนน</b></div>
