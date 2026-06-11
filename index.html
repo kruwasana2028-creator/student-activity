@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>ใบกิจกรรมที่ 2.1 การทำซ้ำ</title>
-  <!-- นำเข้า SweetAlert2 เพื่อใช้ป๊อปอัปสรุปคะแนนที่สวยงาม -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
     body { font-family: 'Prompt', 'Arial', sans-serif; margin: 0; padding: 15px; line-height: 1.6; background-color: #fff4eb; color: #4a3c31; }
@@ -31,14 +30,14 @@
     .required { color: #e74c3c; }
     .hint-text { color: #666; font-size: 13px; font-weight: normal; font-style: italic; }
     
-    /* สไตล์ระบบเวลา (แสดงเฉพาะตัวเลขเวลาลอย ไม่โชว์คะแนนดิบ) */
+    /* สไตล์ระบบเวลา */
     .time-rule-box { background-color: #fff5f5; border-left: 4px solid #e74c3c; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; }
     .time-rule-box ul { margin: 5px 0 0 0; padding-left: 20px; }
     .timer-container { display: none; position: fixed; top: 20px; right: 20px; background: #ffffff; padding: 12px 20px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); border: 2px solid #ff9f43; z-index: 1000; text-align: center; min-width: 120px; }
     .timer-label { font-size: 12px; font-weight: bold; color: #7f6c5f; text-transform: uppercase; margin-bottom: 2px; }
     .timer-display { font-size: 26px; font-weight: bold; color: #d35400; font-family: monospace; line-height: 1; }
     
-    /* จัดแต่งภายในกล่องป๊อปอัปให้ดูง่ายเป็นระเบียบ */
+    /* จัดแต่งภายในกล่องป๊อปอัป */
     .swal-report-box { text-align: left; font-size: 16px; margin-top: 15px; background: #fafafa; padding: 15px; border-radius: 8px; border: 1px solid #eee; }
     .swal-report-line { display: flex; justify-content: space-between; margin-bottom: 8px; }
     .swal-report-total { font-size: 18px; font-weight: bold; color: #27ae60; border-top: 2px dashed #ddd; padding-top: 8px; margin-top: 8px; }
@@ -46,14 +45,13 @@
 </head>
 <body>
 
-<!-- ส่วนแสดงผลนาฬิกาลอยบนหน้าจอ (ซ่อนส่วนคะแนนไว้ จะโชว์แค่เวลาที่เดินอยู่) -->
 <div class="timer-container" id="timerWidget">
   <div class="timer-label">⏱️ เวลาที่ใช้ไป</div>
   <div class="timer-display" id="timeCount">00:00</div>
 </div>
 
 <div class="container">
-  <h2>ใบกิจกรรมที่ 2.1 การทำซ้ำ</h2>
+  <h2>ใบกิจกรรมที่ 2.1 การทำซ้ำ <span id="quiz_version" style="font-size: 16px; color: #7f6c5f;"></span></h2>
   
   <div class="section" style="background-color: #fff0e1;">
     <h3>ข้อมูลผู้ทำกิจกรรม</h3>
@@ -115,12 +113,8 @@
     <thead>
       <tr><th>ลำดับที่</th><th>รายการอาหาร</th><th>ประเภท</th><th>คุณภาพ</th><th>ความนิยม</th><th>ราคา</th><th>คะแนนสำหรับเลือกอาหาร</th></tr>
     </thead>
-    <tbody>
-      <tr><td>1</td><td>ข้าวผัด</td><td>อาหารหลัก</td><td>7</td><td>5</td><td>25</td><td>6.2</td></tr>
-      <tr><td>2</td><td>ข้าวไข่เจียว</td><td>อาหารหลัก</td><td>4</td><td>9</td><td>15</td><td>6.0</td></tr>
-      <tr><td>3</td><td>ข้าวยำ</td><td>อาหารหลัก</td><td>10</td><td>3</td><td>25</td><td>7.2</td></tr>
-      <tr><td>4</td><td>ข้าวซอยไก่</td><td>อาหารหลัก</td><td>8</td><td>5</td><td>30</td><td>6.8</td></tr>
-    </tbody>
+    <tbody id="foodTableBody">
+      </tbody>
   </table>
 
   <div class="section">
@@ -152,12 +146,97 @@
 </div>
 
 <script>
-var keyAnswers = {
-  q1: "1", q2: "6.2", q3: "1", q4: "6.2", q5: "6.2", q6: "เท่ากับ", q7: "1", q8: "6.2",
-  q9: "2", q10: "6.0", q11: "6.2", q12: "น้อยกว่า", q13: "1", q14: "6.2",
-  q15: "3", q16: "7.2", q17: "6.2", q18: "มากกว่า", q19: "3", q20: "7.2",
-  q21: "4", q22: "6.8", q23: "7.2", q24: "น้อยกว่า", q25: "7.2", q26: "3"
-};
+// คลังโจทย์ 3 ชุดที่มีข้อมูลตารางและเฉลยที่แตกต่างกันอย่างสิ้นเชิง
+var quizPool = [
+  {
+    versionName: "(ชุดที่ 1)",
+    tableData: [
+      { id: 1, name: "ข้าวผัด", type: "อาหารหลัก", q: 7, p: 5, price: 25, score: "6.2" },
+      { id: 2, name: "ข้าวไข่เจียว", type: "อาหารหลัก", q: 4, p: 9, price: 15, score: "6.0" },
+      { id: 3, name: "ข้าวยำ", type: "อาหารหลัก", q: 10, p: 3, price: 25, score: "7.2" },
+      { id: 4, name: "ข้าวซอยไก่", type: "อาหารหลัก", q: 8, p: 5, price: 30, score: "6.8" }
+    ],
+    answers: {
+      q1: "1", q2: "6.2", q3: "1", q4: "6.2", q5: "6.2", q6: "เท่ากับ", q7: "1", q8: "6.2",
+      q9: "2", q10: "6.0", q11: "6.2", q12: "น้อยกว่า", q13: "1", q14: "6.2",
+      q15: "3", q16: "7.2", q17: "6.2", q18: "มากกว่า", q19: "3", q20: "7.2",
+      q21: "4", q22: "6.8", q23: "7.2", q24: "น้อยกว่า", q25: "7.2", q26: "3"
+    }
+  },
+  {
+    versionName: "(ชุดที่ 2)",
+    tableData: [
+      { id: 1, name: "ก๋วยเตี๋ยวเรือ", type: "อาหารหลัก", q: 8, p: 6, price: 40, score: "7.5" },
+      { id: 2, name: "ข้าวมันไก่", type: "อาหารหลัก", q: 9, p: 8, price: 45, score: "8.4" },
+      { id: 3, name: "ส้มตำไทย", type: "อาหารหลัก", q: 7, p: 9, price: 35, score: "7.0" },
+      { id: 4, name: "ข้าวหมูแดง", type: "อาหารหลัก", q: 6, p: 5, price: 40, score: "5.8" }
+    ],
+    answers: {
+      q1: "1", q2: "7.5", q3: "1", q4: "7.5", q5: "7.5", q6: "เท่ากับ", q7: "1", q8: "7.5",
+      q9: "2", q10: "8.4", q11: "7.5", q12: "มากกว่า", q13: "2", q14: "8.4",
+      q15: "3", q16: "7.0", q17: "8.4", q18: "น้อยกว่า", q19: "2", q20: "8.4",
+      q21: "4", q22: "5.8", q23: "8.4", q24: "น้อยกว่า", q25: "8.4", q26: "2"
+    }
+  },
+  {
+    versionName: "(ชุดที่ 3)",
+    tableData: [
+      { id: 1, name: "ผัดไทยกุ้งสด", type: "อาหารหลัก", q: 6, p: 7, price: 60, score: "6.5" },
+      { id: 2, name: "ข้าวราดกะเพรา", type: "อาหารหลัก", q: 5, p: 8, price: 35, score: "5.9" },
+      { id: 3, name: "ราดหน้าหมูหมัก", type: "อาหารหลัก", q: 6, p: 5, price: 40, score: "5.5" },
+      { id: 4, name: "ข้าวผัดต้มยำ", type: "อาหารหลัก", q: 9, p: 8, price: 50, score: "8.7" }
+    ],
+    answers: {
+      q1: "1", q2: "6.5", q3: "1", q4: "6.5", q5: "6.5", q6: "เท่ากับ", q7: "1", q8: "6.5",
+      q9: "2", q10: "5.9", q11: "6.5", q12: "น้อยกว่า", q13: "1", q14: "6.5",
+      q15: "3", q16: "5.5", q17: "6.5", q18: "น้อยกว่า", q19: "1", q20: "6.5",
+      q21: "4", q22: "8.7", q23: "6.5", q24: "มากกว่า", q25: "8.7", q26: "4"
+    }
+  }
+];
+
+// ตัวแปรโกลบอลที่จะเก็บโจทย์ข้อที่ถูกเลือก
+var currentQuiz = null;
+var keyAnswers = {};
+
+// ฟังก์ชันเริ่มต้นที่จะทำงานเมื่อเปิดหน้าเว็บ (ทำการสุ่มโจทย์)
+function initQuiz() {
+  var randomIndex = Math.floor(Math.random() * quizPool.length);
+  currentQuiz = quizPool[randomIndex];
+  keyAnswers = currentQuiz.answers;
+
+  // แสดงเลขชุดโจทย์บนหัวข้อ
+  document.getElementById("quiz_version").innerText = currentQuiz.versionName;
+
+  // วาดตารางอาหารใหม่ตามข้อมูลที่สุ่มได้
+  var html = "";
+  currentQuiz.tableData.forEach(function(item) {
+    html += `<tr>
+      <td>${item.id}</td>
+      <td>${item.name}</td>
+      <td>${item.type}</td>
+      <td>${item.q}</td>
+      <td>${item.p}</td>
+      <td>${item.price}</td>
+      <td>${item.score}</td>
+    </tr>`;
+  });
+  document.getElementById("foodTableBody").innerHTML = html;
+
+  // ปรับแต่งคำใบ้ในบางรอบกรณีที่ข้อ 5 มีค่าเริ่มต้น x แตกต่างกันตามชุดโจทย์
+  // (ชุดที่ 1 มีค่า x เก่าคือ 3 / ชุดที่ 2 มีค่า x เก่าคือ 2 / ชุดที่ 3 มีค่า x เก่าคือ 1)
+  var round4_text = document.querySelector("p:nth-of-type(5)");
+  if(randomIndex === 0) {
+    round4_text.innerHTML = `5. <b>รอบที่สี่</b> พิจารณาอาหารลำดับที่ y เป็นข้อมูลอาหารลำดับที่ <input type="text" id="q21" class="answer-input" onchange="checkRealtime('q21')" placeholder="ตัวเลข"> ในรายการ นั่นคือ S = <input type="text" id="q22" class="answer-input" onchange="checkRealtime('q22')" placeholder="ตัวเลข"> <br>S<sub>max</sub> = <input type="text" id="q23" class="answer-input" onchange="checkRealtime('q23')" placeholder="ตัวเลข"> ซึ่ง S <input type="text" id="q24" class="answer-input" onchange="checkRealtime('q24')" placeholder="เปรียบเทียบ"> S<sub>max</sub>, x = 3, S<sub>max</sub> = <input type="text" id="q25" class="answer-input" onchange="checkRealtime('q25')" placeholder="ตัวเลข"> <br><span class="hint-text">(ช่องเปรียบเทียบเติม: มากกว่า / น้อยกว่า / เท่ากับ)</span>`;
+  } else if(randomIndex === 1) {
+    round4_text.innerHTML = `5. <b>รอบที่สี่</b> พิจารณาอาหารลำดับที่ y เป็นข้อมูลอาหารลำดับที่ <input type="text" id="q21" class="answer-input" onchange="checkRealtime('q21')" placeholder="ตัวเลข"> ในรายการ นั่นคือ S = <input type="text" id="q22" class="answer-input" onchange="checkRealtime('q22')" placeholder="ตัวเลข"> <br>S<sub>max</sub> = <input type="text" id="q23" class="answer-input" onchange="checkRealtime('q23')" placeholder="ตัวเลข"> ซึ่ง S <input type="text" id="q24" class="answer-input" onchange="checkRealtime('q24')" placeholder="เปรียบเทียบ"> S<sub>max</sub>, x = 2, S<sub>max</sub> = <input type="text" id="q25" class="answer-input" onchange="checkRealtime('q25')" placeholder="ตัวเลข"> <br><span class="hint-text">(ช่องเปรียบเทียบเติม: มากกว่า / น้อยกว่า / เท่ากับ)</span>`;
+  } else if(randomIndex === 2) {
+    round4_text.innerHTML = `5. <b>รอบที่สี่</b> พิจารณาอาหารลำดับที่ y เป็นข้อมูลอาหารลำดับที่ <input type="text" id="q21" class="answer-input" onchange="checkRealtime('q21')" placeholder="ตัวเลข"> ในรายการ นั่นคือ S = <input type="text" id="q22" class="answer-input" onchange="checkRealtime('q22')" placeholder="ตัวเลข"> <br>S<sub>max</sub> = <input type="text" id="q23" class="answer-input" onchange="checkRealtime('q23')" placeholder="ตัวเลข"> ซึ่ง S <input type="text" id="q24" class="answer-input" onchange="checkRealtime('q24')" placeholder="เปรียบเทียบ"> S<sub>max</sub>, x = 1, S<sub>max</sub> = <input type="text" id="q25" class="answer-input" onchange="checkRealtime('q25')" placeholder="ตัวเลข"> <br><span class="hint-text">(ช่องเปรียบเทียบเติม: มากกว่า / น้อยกว่า / เท่ากับ)</span>`;
+  }
+}
+
+// รันฟังก์ชันสุ่มเมื่อโหลดหน้ากระดานสำเร็จ
+window.onload = initQuiz;
 
 var timerInterval = null;
 var totalSeconds = 0;
@@ -189,7 +268,7 @@ function updateTimer() {
   document.getElementById("timeCount").innerText = displayMin + ":" + displaySec;
 }
 
-// ฟังก์ชันนับคะแนนดิบทั้งหมดในขณะนั้น
+// ฟังก์ชันนับคะแนนดิบทั้งหมด
 function calculateCurrentBaseScore() {
   var bScore = 0;
   if (document.getElementById('q1').value.trim() === keyAnswers.q1 && document.getElementById('q2').value.trim() === keyAnswers.q2) { bScore++; }
@@ -222,7 +301,6 @@ function checkRealtime(inputId) {
 }
 
 // 3. ป๊อปอัปแจ้งผลคะแนนและการทำงานเมื่อส่งข้อมูลสำเร็จ
-// 3. ป๊อปอัปแจ้งผลคะแนนและการทำงานเมื่อส่งข้อมูลสำเร็จ
 function processActivitySheet() {
   var id = document.getElementById('student_id').value.trim();
   var prefix = document.getElementById('prefix').value;
@@ -248,6 +326,7 @@ function processActivitySheet() {
   
   var reportHtml = `
     <div class="swal-report-box">
+      <div class="swal-report-line"><span>📋 ชุดโจทย์ที่ได้:</span> <b>${currentQuiz.versionName}</b></div>
       <div class="swal-report-line"><span>📝 คะแนนจากใบงาน:</span> <b>${baseScore} / 5 คะแนน</b></div>
       <div class="swal-report-line"><span>⏳ เวลาที่ใช้ไปทั้งหมด:</span> <b>${timeString}</b></div>
       <div class="swal-report-line" style="color: #c0392b;"><span>❌ คะแนนที่ถูกหักจากเวลา:</span> <b>-${penalty} คะแนน</b></div>
@@ -257,7 +336,8 @@ function processActivitySheet() {
 
   var dataPayload = { 
     id: id, prefix: prefix, name: name, no: no, section: section, room: room, 
-    score: String(finalScore), time_used: timeString, penalty_score: String(penalty) 
+    score: String(finalScore), time_used: timeString, penalty_score: String(penalty),
+    quiz_version: currentQuiz.versionName // ส่งข้อมูลเวอร์ชันโจทย์เข้าชีตไปด้วย เพื่อตรวจสอบย้อนหลัง
   };
   
   // 🔴 เปลี่ยนเป็นลิงก์ Web App ปัจจุบันของคุณที่ได้จาก Google Apps Script ครับ
@@ -267,14 +347,12 @@ function processActivitySheet() {
   btn.disabled = true;
   btn.innerText = "กำลังส่งคำตอบและบันทึกลง Google ชีต...";
 
-  // แก้ไขวิธีการส่งเป็น POST แบบฟอร์มปกติเพื่อทะลวง CORS ของ Google Apps Script
   fetch(webAppUrl, {
     method: "POST",
     headers: { "Content-Type": "text/plain;charset=utf-8" },
     body: JSON.stringify(dataPayload)
   })
   .then(function(response) {
-     // เมื่อส่งสำเร็จ แสดงป๊อปอัปรายงานคะแนน
      Swal.fire({
        icon: 'success',
        title: 'ส่งคำตอบสำเร็จและบันทึกข้อมูลเรียบร้อย!',
