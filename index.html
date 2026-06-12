@@ -5,64 +5,76 @@
   <title>ใบกิจกรรมที่ 2.1 การทำซ้ำ</title>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
-    body { font-family: 'Prompt', 'Arial', sans-serif; margin: 0; padding: 15px; line-height: 1.6; background-color: #fff4eb; color: #4a3c31; }
-    .container { max-width: 900px; background: #ffffff; padding: 30px; margin: 10px auto; border-radius: 16px; box-shadow: 0 8px 24px rgba(230, 126, 34, 0.1); border-top: 10px solid #ff9f43; position: relative; }
+    body { font-family: 'Prompt', 'Arial', sans-serif; margin: 0; padding: 15px; line-height: 1.6; background-color: #fff4eb; color: #4a3c31; position: relative; }
+    .container { max-width: 900px; background: #ffffff; padding: 30px; margin: 10px auto; border-radius: 16px; box-shadow: 0 8px 24px rgba(230, 126, 34, 0.1); border-top: 10px solid #ff9f43; position: relative; z-index: 1; }
+    
+    /* สไตล์ลายน้ำ */
+    .watermark-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; overflow: hidden; opacity: 0.07; display: none; }
+    .watermark-text { position: absolute; font-size: 28px; font-weight: bold; color: #000; white-space: nowrap; transform: rotate(-25deg); }
+
+    /* สไตล์ระบบเบลอหน้าจอเมื่อหลุดโฟกัส */
+    .blur-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(20px); z-index: 10000; justify-content: center; align-items: center; flex-direction: column; color: #d35400; text-align: center; }
+    
     h2 { text-align: center; color: #d35400; margin-top: 0; font-size: 24px; }
     h3 { color: #e67e22; border-bottom: 2px solid #ffd8be; padding-bottom: 5px; margin-top: 20px; }
     .section { margin-bottom: 20px; padding: 20px; border: 1px solid #ffe0cc; border-radius: 12px; background-color: #fffdfb; }
     .student-grid-row1 { display: grid; grid-template-columns: 1.5fr 1fr 2fr; gap: 15px; margin-bottom: 15px; }
     .student-grid-row2 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 15px; }
     @media (max-width: 768px) { .student-grid-row1, .student-grid-row2 { grid-template-columns: 1fr; } }
+    
     label { font-weight: bold; display: block; margin-bottom: 6px; color: #7f6c5f; font-size: 14px; }
-    input[type="text"], select { padding: 10px; width: 100%; box-sizing: border-box; border: 2px solid #ffd4b3; border-radius: 8px; font-size: 15px; transition: all 0.3s; background-color: #fff; }
-    input[type="text"]:focus, select:focus { border-color: #ff9f43; outline: none; box-shadow: 0 0 6px rgba(255, 159, 67, 0.3); }
-    .answer-input { width: 115px !important; text-align: center; display: inline-block; margin: 2px 4px; padding: 5px 8px !important; border: 2px solid #ffccab !important; background-color: #fff9f5; font-weight: bold; color: #d35400; border-radius: 6px; transition: all 0.3s; }
+    input[type="text"], select { padding: 10px; width: 100%; box-sizing: border-box; border: 2px solid #ffd4b3; border-radius: 8px; font-size: 15px; background-color: #fff; }
+    input[type="text"]:focus, select:focus { border-color: #ff9f43; outline: none; }
+    
+    /* ซ่อนเนื้อหาโจทย์ไว้ก่อนจนกว่าจะกรอกข้อมูลนักเรียนครบ */
+    #quizContentArea { display: none; }
+
+    .answer-input { width: 115px !important; text-align: center; display: inline-block; margin: 2px 4px; padding: 5px 8px !important; border: 2px solid #ffccab !important; background-color: #fff9f5; font-weight: bold; color: #d35400; border-radius: 6px; }
     .input-error { border-color: #e74c3c !important; background-color: #fceade !important; color: #c0392b !important; }
-    table { width: 100%; border-collapse: collapse; margin: 15px 0 25px 0; background-color: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
+    table { width: 100%; border-collapse: collapse; margin: 15px 0 25px 0; background-color: #fff; border-radius: 8px; overflow: hidden; }
     th, td { border: 1px solid #ffe0cc; padding: 10px; text-align: center; font-size: 14px; }
-    th { background-color: #ff9f43; color: white; font-weight: bold; }
+    th { background-color: #ff9f43; color: white; }
     tr:nth-child(even) { background-color: #fff9f3; }
     .algo-box { background-color: #fff6ee; border-left: 4px solid #ff9f43; padding: 15px; border-radius: 6px; font-size: 14.5px; }
     .indent-1 { margin-left: 20px; }
     .indent-2 { margin-left: 40px; }
-    .btn-submit { background-color: #ff7f11; color: white; padding: 14px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: bold; width: 100%; margin-top: 10px; box-shadow: 0 4px 12px rgba(255, 127, 17, 0.25); transition: background 0.2s; }
+    .btn-submit { background-color: #ff7f11; color: white; padding: 14px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: bold; width: 100%; margin-top: 10px; }
     .btn-submit:hover { background-color: #e66700; }
     .required { color: #e74c3c; }
-    .hint-text { color: #666; font-size: 13px; font-weight: normal; font-style: italic; }
+    .hint-text { color: #666; font-size: 13px; font-style: italic; }
     
-    /* สไตล์ระบบเวลา */
-    .time-rule-box { background-color: #fff5f5; border-left: 4px solid #e74c3c; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; }
-    .time-rule-box ul { margin: 5px 0 0 0; padding-left: 20px; }
-    .timer-container { display: none; position: fixed; top: 20px; right: 20px; background: #ffffff; padding: 12px 20px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); border: 2px solid #ff9f43; z-index: 1000; text-align: center; min-width: 120px; }
-    .timer-label { font-size: 12px; font-weight: bold; color: #7f6c5f; text-transform: uppercase; margin-bottom: 2px; }
-    .timer-display { font-size: 26px; font-weight: bold; color: #d35400; font-family: monospace; line-height: 1; }
-    
-    /* จัดแต่งภายในกล่องป๊อปอัป */
-    .swal-report-box { text-align: left; font-size: 16px; margin-top: 15px; background: #fafafa; padding: 15px; border-radius: 8px; border: 1px solid #eee; }
-    .swal-report-line { display: flex; justify-content: space-between; margin-bottom: 8px; }
-    .swal-report-total { font-size: 18px; font-weight: bold; color: #27ae60; border-top: 2px dashed #ddd; padding-top: 8px; margin-top: 8px; }
+    .timer-container { display: none; position: fixed; top: 20px; right: 20px; background: #ffffff; padding: 12px 20px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); border: 2px solid #ff9f43; z-index: 1000; text-align: center; }
+    .timer-display { font-size: 26px; font-weight: bold; color: #d35400; font-family: monospace; }
   </style>
 </head>
-<body>
+<body oncontextmenu="return false;">
+
+<div class="blur-overlay" id="blurScreen">
+  <h1>🔒 หน้าจอถูกล็อกชั่วคราว</h1>
+  <p>ระบบตรวจพบว่าหน้าต่างหลุดโฟกัส หรือมีการพยายามสลับหน้าจอไปหาคำตอบ</p>
+  <p style="color: #e74c3c; font-weight: bold; margin-top: 10px;">โปรดคลิกที่นี่เพื่อกลับเข้าสู่ใบงานและทำต่อ</p>
+</div>
 
 <div class="timer-container" id="timerWidget">
-  <div class="timer-label">⏱️ เวลาที่ใช้ไป</div>
+  <div style="font-size: 12px; font-weight: bold; color: #7f6c5f;">⏱️ เวลาที่ใช้ไป</div>
   <div class="timer-display" id="timeCount">00:00</div>
 </div>
 
-<div class="container">
-  <h2>ใบกิจกรรมที่ 2.1 การทำซ้ำ</h2>
+<div class="container" id="mainContainer">
+  <div class="watermark-overlay" id="watermarkLayer"></div>
+
+  <h2>ใบกิจกรรมที่ 2.1 การทำซ้ำ <span id="versionTitle" style="font-size: 16px; color: #7f6c5f;"></span></h2>
   
   <div class="section" style="background-color: #fff0e1;">
-    <h3>ข้อมูลผู้ทำกิจกรรม</h3>
+    <h3>ข้อมูลผู้ทำกิจกรรม (โปรดกรอกข้อมูลให้ครบถ้วนเพื่อเปิดระบบข้อสอบ)</h3>
     <div class="student-grid-row1">
       <div>
         <label>1. เลขประจำตัวนักเรียน <span class="required">*</span></label>
-        <input type="text" id="student_id" placeholder="กรอกเลขประจำตัว" required>
+        <input type="text" id="student_id" placeholder="กรอกเลขประจำตัว" oninput="handleStudentDataChange()" required>
       </div>
       <div>
         <label>2. คำนำหน้าชื่อ <span class="required">*</span></label>
-        <select id="prefix" required>
+        <select id="prefix" onchange="handleStudentDataChange()" required>
           <option value="">-- เลือก --</option>
           <option value="นาย">นาย</option>
           <option value="นางสาว">นางสาว</option>
@@ -70,14 +82,14 @@
       </div>
       <div>
         <label>3. ชื่อ - นามสกุล <span class="required">*</span></label>
-        <input type="text" id="student_name" placeholder="กรอกชื่อและนามสกุลจริง" required>
+        <input type="text" id="student_name" placeholder="กรอกชื่อและนามสกุลจริง" oninput="handleStudentDataChange()" required>
       </div>
     </div>
 
     <div class="student-grid-row2">
       <div>
         <label>4. เลขที่ <span class="required">*</span></label>
-        <input type="text" id="student_no" placeholder="เช่น 1" required>
+        <input type="text" id="student_no" placeholder="กรอกเฉพาะตัวเลข เช่น 5" oninput="handleStudentDataChange()" required>
       </div>
       <div>
         <label>5. ตอน <span class="required">*</span></label>
@@ -94,190 +106,221 @@
     </div>
   </div>
 
-  <div class="time-rule-box">
-    <strong>⏳ คำชี้แจงและเกณฑ์การให้คะแนนเรื่องเวลา:</strong>
-    <p style="margin: 5px 0;">ระบบจะเริ่มจับเวลาทันทีเมื่อนักเรียนเริ่มกรอกคำตอบลงในช่องแรกของกิจกรรม โปรดทำด้วยความซื่อสัตย์ <u>หากสลับไปแท็บอื่นหรือออกจากหน้าต่างนี้ระบบจะทำการแจ้งเตือนทันที</u></p>
-    <ul>
-      <li>ใช้เวลาไม่เกิน <b>15 นาที</b> : ไม่หักคะแนน</li>
-      <li>ใช้เวลาตั้งแต่ <b>17 นาทีขึ้นไป</b> : หัก 1 คะแนน</li>
-      <li>ใช้เวลาตั้งแต่ <b>19 นาทีขึ้นไป</b> : หัก 2 คะแนน</li>
-      <li>ใช้เวลาตั้งแต่ <b>21 นาทีขึ้นไป</b> : หัก 3 คะแนน</li>
-      <li>ใช้เวลาตั้งแต่ <b>23 นาทีขึ้นไป</b> : หัก 4 คะแนน</li>
-      <li>ใช้เวลาตั้งแต่ <b>25 นาทีขึ้นไป</b> : หัก 5 คะแนน (คะแนนสุทธิต่ำสุดคือ 0 คะแนน)</li>
-    </ul>
-  </div>
-
-  <p><b>คำชี้แจงกิจกรรม:</b> หารายการอาหารที่มีความเหมาะสมที่สุดโดยพิจารณาจากคะแนนในตาราง</p>
-
-  <table>
-    <thead>
-      <tr><th>ลำดับที่</th><th>รายการอาหาร</th><th>ประเภท</th><th>คุณภาพ</th><th>ความนิยม</th><th>ราคา</th><th>คะแนนสำหรับเลือกอาหาร</th></tr>
-    </thead>
-    <tbody id="foodTableBody">
-      </tbody>
-  </table>
-
-  <div class="section">
-    <h3>ขั้นตอนวิธี</h3>
-    <div class="algo-box">
-      1. ให้ x เท่ากับ 1<br>&nbsp;&nbsp;&nbsp;&nbsp;ให้ S<sub>max</sub> แทนคะแนนของอาหารลำดับที่ x<br>2. พิจารณารายการอาหารจากตาราง ทีละรายการจนครบ<br><div class="indent-1">2.1 ขณะที่พิจารณาอาหารลำดับที่ y</div><div class="indent-1">2.2 ให้ S แทนคะแนนของอาหารลำดับที่ y</div><div class="indent-1">2.3 ถ้า S มากกว่า S<sub>max</sub> แล้ว</div><div class="indent-2">2.3.1 ให้ x มีค่าเท่ากับ y</div><div class="indent-2">2.3.2 ให้ S<sub>max</sub> มีค่าเท่ากับ S</div>3. ตอบว่าอาหารลำดับที่ x เป็นอาหารที่เหมาะสมที่สุด
+  <div id="quizContentArea">
+    <div class="section" style="background-color: #fff5f5; border-left: 4px solid #e74c3c;">
+      <strong>🛡️ ระบบความปลอดภัยขั้นสูงเปิดใช้งาน:</strong>
+      <p style="margin: 5px 0 0 0; color: #c0392b;">โจทย์ตารางอาหารและเฉลยหลังบ้านของใบงานนี้ ถูกคำนวณและสร้างขึ้นเฉพาะบุคคลโดยผูกกับ <b>"เลขที่"</b> ของนักเรียนเรียบร้อยแล้ว การลอกคำตอบจากเพื่อน หรือการใช้ AI สแกนภาพโดยรวมจะไม่สามารถให้คำตอบที่ถูกต้องตรงกับระบบของนักเรียนคนนี้ได้</p>
     </div>
+
+    <p><b>คำชี้แจงกิจกรรม:</b> หารายการอาหารที่มีความเหมาะสมที่สุดโดยพิจารณาจากคะแนนในตาราง</p>
+
+    <table>
+      <thead>
+        <tr><th>ลำดับที่</th><th>รายการอาหาร</th><th>ประเภท</th><th>คุณภาพ</th><th>ความนิยม</th><th>ราคา</th><th>คะแนนสำหรับเลือกอาหาร (คำนวณเฉพาะบุคคล)</th></tr>
+      </thead>
+      <tbody id="foodTableBody"></tbody>
+    </table>
+
+    <div class="section">
+      <h3>ขั้นตอนวิธี</h3>
+      <div class="algo-box">
+        1. ให้ x เท่ากับ 1<br>&nbsp;&nbsp;&nbsp;&nbsp;ให้ S<sub>max</sub> แทนคะแนนของอาหารลำดับที่ x<br>2. พิจารณารายการอาหารจากตาราง ทีละรายการจนครบ<br><div class="indent-1">2.1 ขณะที่พิจารณาอาหารลำดับที่ y</div><div class="indent-1">2.2 ให้ S แทนคะแนนของอาหารลำดับที่ y</div><div class="indent-1">2.3 ถ้า S มากกว่า S<sub>max</sub> แล้ว</div><div class="indent-2">2.3.1 ให้ x มีค่าเท่ากับ y</div><div class="indent-2">2.3.2 ให้ S<sub>max</sub> มีค่าเท่ากับ S</div>3. ตอบว่าอาหารลำดับที่ x เป็นอาหารที่เหมาะสมที่สุด
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>ให้นักเรียนเติมข้อมูลที่แสดงถึงการทำงานของขั้นตอนวิธี (ตรวจคำตอบทันทีเมื่อตอบผิด)</h3>
+      <p style="color: #d35400; font-weight: bold;">⚠️ ข้อแนะนำการตอบ: ช่องตัวเลขให้ตอบเป็นทศนิยม 1 ตำแหน่งตามตาราง (เช่น 6.5) / ช่องเปรียบเทียบพิมพ์คำว่า "มากกว่า", "น้อยกว่า" หรือ "เท่ากับ"</p>
+      <hr style="border: 0; border-top: 1px solid #ffd8be; margin-bottom: 15px;">
+
+      <p>1. ตัวแปร x มีค่าเท่ากับ 1 ให้ S<sub>max</sub> แทนคะแนนของอาหารลำดับที่ <input type="text" id="q1" class="answer-input" oninput="startTimerOnce()" onchange="checkRealtime('q1')" placeholder="ตัวเลข"> เท่ากับ <input type="text" id="q2" class="answer-input" onchange="checkRealtime('q2')" placeholder="ตัวเลข"></p>
+      
+      <p>2. <b>รอบแรก</b> พิจารณาอาหารลำดับที่ y เป็นข้อมูลอาหารลำดับที่ <input type="text" id="q3" class="answer-input" onchange="checkRealtime('q3')" placeholder="ตัวเลข"> นั่นคือ S = <input type="text" id="q4" class="answer-input" onchange="checkRealtime('q4')" placeholder="ตัวเลข"> <br>S<sub>max</sub> = <input type="text" id="q5" class="answer-input" onchange="checkRealtime('q5')" placeholder="ตัวเลข"> ซึ่ง S <input type="text" id="q6" class="answer-input" onchange="checkRealtime('q6')" placeholder="เปรียบเทียบ"> S<sub>max</sub>, x = <input type="text" id="q7" class="answer-input" onchange="checkRealtime('q7')" placeholder="ตัวเลข">, S<sub>max</sub> = <input type="text" id="q8" class="answer-input" onchange="checkRealtime('q8')" placeholder="ตัวเลข"></p>
+      
+      <p>3. <b>รอบที่สอง</b> พิจารณาอาหารลำดับที่ y เป็นข้อมูลอาหารลำดับที่ <input type="text" id="q9" class="answer-input" onchange="checkRealtime('q9')" placeholder="ตัวเลข"> นั่นคือ S = <input type="text" id="q10" class="answer-input" onchange="checkRealtime('q10')" placeholder="ตัวเลข"><br>S<sub>max</sub> = <input type="text" id="q11" class="answer-input" onchange="checkRealtime('q11')" placeholder="ตัวเลข"> ซึ่ง S <input type="text" id="q12" class="answer-input" onchange="checkRealtime('q12')" placeholder="เปรียบเทียบ"> S<sub>max</sub>, x = <input type="text" id="q13" class="answer-input" onchange="checkRealtime('q13')" placeholder="ตัวเลข">, S<sub>max</sub> = <input type="text" id="q14" class="answer-input" onchange="checkRealtime('q14')" placeholder="ตัวเลข"></p>
+      
+      <p>4. <b>รอบที่สาม</b> พิจารณาอาหารลำดับที่ y เป็นข้อมูลอาหารลำดับที่ <input type="text" id="q15" class="answer-input" onchange="checkRealtime('q15')" placeholder="ตัวเลข"> นั่นคือ S = <input type="text" id="q16" class="answer-input" onchange="checkRealtime('q16')" placeholder="ตัวเลข"> <br>S<sub>max</sub> = <input type="text" id="q17" class="answer-input" onchange="checkRealtime('q17')" placeholder="ตัวเลข"> ซึ่ง S <input type="text" id="q18" class="answer-input" onchange="checkRealtime('q18')" placeholder="เปรียบเทียบ"> S<sub>max</sub>, x = <input type="text" id="q19" class="answer-input" onchange="checkRealtime('q19')" placeholder="ตัวเลข">, S<sub>max</sub> = <input type="text" id="q20" class="answer-input" onchange="checkRealtime('q20')" placeholder="ตัวเลข"></p>
+      
+      <p>5. <b>รอบที่สี่</b> พิจารณาอาหารลำดับที่ y เป็นข้อมูลอาหารลำดับที่ <input type="text" id="q21" class="answer-input" onchange="checkRealtime('q21')" placeholder="ตัวเลข"> นั่นคือ S = <input type="text" id="q22" class="answer-input" onchange="checkRealtime('q22')" placeholder="ตัวเลข"> <br>S<sub>max</sub> = <input type="text" id="q23" class="answer-input" onchange="checkRealtime('q23')" placeholder="ตัวเลข"> ซึ่ง S <input type="text" id="q24" class="answer-input" onchange="checkRealtime('q24')" placeholder="เปรียบเทียบ"> S<sub>max</sub>, x = <input type="text" id="q23_x" class="answer-input" onchange="checkRealtime('q23_x')" placeholder="ตัวเลข">, S<sub>max</sub> = <input type="text" id="q25" class="answer-input" onchange="checkRealtime('q25')" placeholder="ตัวเลข"></p>
+      
+      <p>6. อาหารลำดับที่ <input type="text" id="q26" class="answer-input" onchange="checkRealtime('q26')" placeholder="ตัวเลข"> เป็นอาหารที่เหมาะสมที่สุดและจบการทำงาน</p>
+    </div>
+
+    <button class="btn-submit" id="submitBtn" onclick="processActivitySheet()">ส่งคำตอบ</button>
   </div>
-
-  <div class="section">
-    <h3>ให้นักเรียนเติมข้อมูลที่แสดงถึงการทำงานของขั้นตอนวิธี (ตรวจคำตอบทันทีเมื่อตอบผิด)</h3>
-    <p style="color: #d35400; font-weight: bold;">⚠️ ข้อแนะนำการตอบ: ช่องที่เติมค่าตัวเลขให้ตอบเป็นตัวเลข (เช่น 1 หรือ 6.2) / ช่องที่เปรียบเทียบให้พิมพ์คำว่า "มากกว่า", "น้อยกว่า" หรือ "เท่ากับ" เท่านั้น</p>
-    <hr style="border: 0; border-top: 1px solid #ffd8be; margin-bottom: 15px;">
-
-    <p>1. ตัวแปร x มีค่าเท่ากับ 1 ให้ S<sub>max</sub> แทนคะแนนของอาหารลำดับที่ <input type="text" id="q1" class="answer-input" oninput="startTimerOnce()" onchange="checkRealtime('q1')" placeholder="ตัวเลข"> เท่ากับ <input type="text" id="q2" class="answer-input" onchange="checkRealtime('q2')" placeholder="ตัวเลข"> <span class="hint-text">(เติมตัวเลข)</span></p>
-    
-    <p>2. <b>รอบแรก</b> พิจารณาอาหารลำดับที่ y เป็นข้อมูลอาหารลำดับที่ <input type="text" id="q3" class="answer-input" onchange="checkRealtime('q3')" placeholder="ตัวเลข"> ในรายการ นั่นคือ S = <input type="text" id="q4" class="answer-input" onchange="checkRealtime('q4')" placeholder="ตัวเลข"> <br>S<sub>max</sub> = <input type="text" id="q5" class="answer-input" onchange="checkRealtime('q5')" placeholder="ตัวเลข"> ซึ่ง S <input type="text" id="q6" class="answer-input" onchange="checkRealtime('q6')" placeholder="เปรียบเทียบ"> S<sub>max</sub>, x = <input type="text" id="q7" class="answer-input" onchange="checkRealtime('q7')" placeholder="ตัวเลข">, S<sub>max</sub> = <input type="text" id="q8" class="answer-input" onchange="checkRealtime('q8')" placeholder="ตัวเลข"> <br><span class="hint-text">(ช่องเปรียบเทียบเติม: มากกว่า / น้อยกว่า / เท่ากับ)</span></p>
-    
-    <p>3. <b>รอบที่สอง</b> พิจารณาอาหารลำดับที่ y เป็นข้อมูลอาหารลำดับที่ <input type="text" id="q9" class="answer-input" onchange="checkRealtime('q9')" placeholder="ตัวเลข"> ในรายการ นั่นคือ S = <input type="text" id="q10" class="answer-input" onchange="checkRealtime('q10')" placeholder="ตัวเลข"><br>S<sub>max</sub> = <input type="text" id="q11" class="answer-input" onchange="checkRealtime('q11')" placeholder="ตัวเลข"> ซึ่ง S <input type="text" id="q12" class="answer-input" onchange="checkRealtime('q12')" placeholder="เปรียบเทียบ"> S<sub>max</sub>, x = <input type="text" id="q13" class="answer-input" onchange="checkRealtime('q13')" placeholder="ตัวเลข">, S<sub>max</sub> = <input type="text" id="q14" class="answer-input" onchange="checkRealtime('q14')" placeholder="ตัวเลข"> <br><span class="hint-text">(ช่องเปรียบเทียบเติม: มากกว่า / น้อยกว่า / เท่ากับ)</span></p>
-    
-    <p>4. <b>รอบที่สาม</b> พิจารณาอาหารลำดับที่ y เป็นข้อมูลอาหารลำดับที่ <input type="text" id="q15" class="answer-input" onchange="checkRealtime('q15')" placeholder="ตัวเลข"> ในรายการ นั่นคือ S = <input type="text" id="q16" class="answer-input" onchange="checkRealtime('q16')" placeholder="ตัวเลข"> <br>S<sub>max</sub> = <input type="text" id="q17" class="answer-input" onchange="checkRealtime('q17')" placeholder="ตัวเลข"> ซึ่ง S <input type="text" id="q18" class="answer-input" onchange="checkRealtime('q18')" placeholder="เปรียบเทียบ"> S<sub>max</sub>, x = <input type="text" id="q19" class="answer-input" onchange="checkRealtime('q19')" placeholder="ตัวเลข">, S<sub>max</sub> = <input type="text" id="q20" class="answer-input" onchange="checkRealtime('q20')" placeholder="ตัวเลข"> <br><span class="hint-text">(ช่องเปรียบเทียบเติม: มากกว่า / น้อยกว่า / เท่ากับ)</span></p>
-    
-    <p>5. <b>รอบที่สี่</b> พิจารณาอาหารลำดับที่ y เป็นข้อมูลอาหารลำดับที่ <input type="text" id="q21" class="answer-input" onchange="checkRealtime('q21')" placeholder="ตัวเลข"> ในรายการ นั่นคือ S = <input type="text" id="q22" class="answer-input" onchange="checkRealtime('q22')" placeholder="ตัวเลข"> <br>S<sub>max</sub> = <input type="text" id="q23" class="answer-input" onchange="checkRealtime('q23')" placeholder="ตัวเลข"> ซึ่ง S <input type="text" id="q24" class="answer-input" onchange="checkRealtime('q24')" placeholder="เปรียบเทียบ"> S<sub>max</sub>, x = <input type="text" id="q23_x" class="answer-input" onchange="checkRealtime('q23_x')" placeholder="ตัวเลข">, S<sub>max</sub> = <input type="text" id="q25" class="answer-input" onchange="checkRealtime('q25')" placeholder="ตัวเลข"> <br><span class="hint-text">(ช่องเปรียบเทียบเติม: มากกว่า / น้อยกว่า / เท่ากับ)</span></p>
-    
-    <p>6. อาหารลำดับที่ <input type="text" id="q26" class="answer-input" onchange="checkRealtime('q26')" placeholder="ตัวเลข"> เป็นอาหารที่เหมาะสมที่สุดและจบการทำงาน <span class="hint-text">(เติมตัวเลข)</span></p>
-  </div>
-
-  <button class="btn-submit" id="submitBtn" onclick="processActivitySheet()">ส่งคำตอบ</button>
 </div>
 
 <script>
-var quizPool = [
-  {
-    versionName: "(ชุดที่ 1)",
-    tableData: [
-      { id: 1, name: "ข้าวผัด", type: "อาหารหลัก", q: 7, p: 5, price: 25, score: "6.2" },
-      { id: 2, name: "ข้าวไข่เจียว", type: "อาหารหลัก", q: 4, p: 9, price: 15, score: "6.0" },
-      { id: 3, name: "ข้าวยำ", type: "อาหารหลัก", q: 10, p: 3, price: 25, score: "7.2" },
-      { id: 4, name: "ข้าวซอยไก่", type: "อาหารหลัก", q: 8, p: 5, price: 30, score: "6.8" }
-    ],
-    answers: {
-      q1: "1", q2: "6.2", 
-      q3: "1", q4: "6.2", q5: "6.2", q6: "เท่ากับ", q7: "1", q8: "6.2",
-      q9: "2", q10: "6.0", q11: "6.2", q12: "น้อยกว่า", q13: "1", q14: "6.2",
-      q15: "3", q16: "7.2", q17: "6.2", q18: "มากกว่า", q19: "3", q20: "7.2",
-      q21: "4", q22: "6.8", q23: "7.2", q24: "น้อยกว่า", q23_x: "3", q25: "7.2", q26: "3"
-    }
-  },
-  {
-    versionName: "(ชุดที่ 2)",
-    tableData: [
-      { id: 1, name: "ก๋วยเตี๋ยวเรือ", type: "อาหารหลัก", q: 8, p: 6, price: 40, score: "7.5" },
-      { id: 2, name: "ข้าวมันไก่", type: "อาหารหลัก", q: 9, p: 8, price: 45, score: "8.4" },
-      { id: 3, name: "ส้มตำไทย", type: "อาหารหลัก", q: 7, p: 9, price: 35, score: "7.0" },
-      { id: 4, name: "ข้าวหมูแดง", type: "อาหารหลัก", q: 6, p: 5, price: 40, score: "5.8" }
-    ],
-    answers: {
-      q1: "1", q2: "7.5", 
-      q3: "1", q4: "7.5", q5: "7.5", q6: "เท่ากับ", q7: "1", q8: "7.5",
-      q9: "2", q10: "8.4", q11: "7.5", q12: "มากกว่า", q13: "2", q14: "8.4",
-      q15: "3", q16: "7.0", q17: "8.4", q18: "น้อยกว่า", q19: "2", q20: "8.4",
-      q21: "4", q22: "5.8", q23: "8.4", q24: "น้อยกว่า", q23_x: "2", q25: "8.4", q26: "2"
-    }
-  },
-  {
-    versionName: "(ชุดที่ 3)",
-    tableData: [
-      { id: 1, name: "ผัดไทยกุ้งสด", type: "อาหารหลัก", q: 6, p: 7, price: 60, score: "6.5" },
-      { id: 2, name: "ข้าวราดกะเพรา", type: "อาหารหลัก", q: 5, p: 8, price: 35, score: "5.9" },
-      { id: 3, name: "ราดหน้าหมูหมัก", type: "อาหารหลัก", q: 6, p: 5, price: 40, score: "5.5" },
-      { id: 4, name: "ข้าวผัดต้มยำ", type: "อาหารหลัก", q: 9, p: 8, price: 50, score: "8.7" }
-    ],
-    answers: {
-      q1: "1", q2: "6.5", 
-      q3: "1", q4: "6.5", q5: "6.5", q6: "เท่ากับ", q7: "1", q8: "6.5",
-      q9: "2", q10: "5.9", q11: "6.5", q12: "น้อยกว่า", q13: "1", q14: "6.5",
-      q15: "3", q16: "5.5", q17: "6.5", q18: "น้อยกว่า", q19: "1", q20: "6.5",
-      q21: "4", q22: "8.7", q23: "6.5", q24: "มากกว่า", q23_x: "4", q25: "8.7", q26: "4"
-    }
-  }
+// คลังโจทย์ดิบ 10 ชุด (คะแนนเบสพื้นฐานก่อนคำนวณบวกเลขที่นักเรียน)
+var rawQuizPool = [
+  { versionName: "(คลังชุดที่ 1)", data: [{id:1,name:"ข้าวผัด",type:"อาหารหลัก",q:7,p:5,price:25,baseScore:6.2},{id:2,name:"ข้าวไข่เจียว",type:"อาหารหลัก",q:4,p:9,price:15,baseScore:6.0},{id:3,name:"ข้าวยำ",type:"อาหารหลัก",q:10,p:3,price:25,baseScore:7.2},{id:4,name:"ข้าวซอยไก่",type:"อาหารหลัก",q:8,p:5,price:30,baseScore:6.8}] },
+  { versionName: "(คลังชุดที่ 2)", data: [{id:1,name:"ก๋วยเตี๋ยวเรือ",type:"อาหารหลัก",q:8,p:6,price:40,baseScore:5.5},{id:2,name:"ข้าวมันไก่",type:"อาหารหลัก",q:9,p:8,price:45,baseScore:6.4},{id:3,name:"ส้มตำไทย",type:"อาหารหลัก",q:7,p:9,price:35,baseScore:7.0},{id:4,name:"ข้าวหมูแดง",type:"อาหารหลัก",q:6,p:5,price:40,baseScore:5.8}] },
+  { versionName: "(คลังชุดที่ 3)", data: [{id:1,name:"ผัดไทยกุ้งสด",type:"อาหารหลัก",q:6,p:7,price:60,baseScore:6.5},{id:2,name:"ข้าวราดกะเพรา",type:"อาหารหลัก",q:5,p:8,price:35,baseScore:5.9},{id:3,name:"ราดหน้าหมูหมัก",type:"อาหารหลัก",q:6,p:5,price:40,baseScore:5.5},{id:4,name:"ข้าวผัดต้มยำ",type:"อาหารหลัก",q:9,p:8,price:50,baseScore:4.7}] },
+  { versionName: "(คลังชุดที่ 4)", data: [{id:1,name:"ข้าวหมกไก่",type:"อาหารหลัก",q:7,p:6,price:40,baseScore:6.9},{id:2,name:"บะหมี่หมูแดง",type:"อาหารหลัก",q:8,p:7,price:35,baseScore:5.3},{id:3,name:"ข้าวคลุกกะปิ",type:"อาหารหลัก",q:5,p:6,price:40,baseScore:5.7},{id:4,name:"สุกี้น้ำไก่",type:"อาหารหลัก",q:6,p:8,price:35,baseScore:6.2}] },
+  { versionName: "(คลังชุดที่ 5)", data: [{id:1,name:"ข้าวขาหมู",type:"อาหารหลัก",q:6,p:8,price:50,baseScore:6.1},{id:2,name:"สปาเก็ตตี้",type:"อาหารหลัก",q:7,p:6,price:55,baseScore:6.4},{id:3,name:"ข้าวต้มกุ้ง",type:"อาหารหลัก",q:8,p:7,price:45,baseScore:5.2},{id:4,name:"ต้มยำกุ้ง+ข้าว",type:"อาหารหลัก",q:5,p:9,price:60,baseScore:5.9}] },
+  { versionName: "(คลังชุดที่ 6)", data: [{id:1,name:"ข้าวไข่ข้นกุ้ง",type:"อาหารหลัก",q:8,p:8,price:50,baseScore:5.9},{id:2,name:"เย็นตาโฟ",type:"อาหารหลัก",q:6,p:5,price:40,baseScore:5.4},{id:3,name:"ข้าวเหนียวส้มตำ",type:"อาหารหลัก",q:7,p:9,price:60,baseScore:6.8},{id:4,name:"ราเมนหมูชาชู",type:"อาหารหลัก",q:9,p:7,price:89,baseScore:6.2}] },
+  { versionName: "(คลังชุดที่ 7)", data: [{id:1,name:"ข้าวผัดแกงเขียวหวาน",type:"อาหารหลัก",q:5,p:7,price:45,baseScore:5.6},{id:2,name:"ก๋วยเตี๋ยวไก่มะระ",type:"อาหารหลัก",q:8,p:6,price:40,baseScore:7.1},{id:3,name:"ข้าวหน้าเป็ด",type:"อาหารหลัก",q:9,p:8,price:50,baseScore:6.5},{id:4,name:"ข้าวเหนียวหมูปิ้ง",type:"อาหารหลัก",q:7,p:9,price:30,baseScore:5.3}] },
+  { versionName: "(คลังชุดที่ 8)", data: [{id:1,name:"ข้าวหน้าเนื้อ",type:"อาหารหลัก",q:9,p:8,price:69,baseScore:6.6},{id:2,name:"ขนมจีนน้ำยา",type:"อาหารหลัก",q:6,p:6,price:35,baseScore:5.8},{id:3,name:"ข้าวผัดอเมริกัน",type:"อาหารหลัก",q:7,p:5,price:55,baseScore:6.1},{id:4,name:"ก๋วยจั๊บน้ำข้น",type:"อาหารหลัก",q:8,p:7,price:45,baseScore:5.4}] },
+  { versionName: "(คลังชุดที่ 9)", data: [{id:1,name:"ข้าวไข่เจียวทรงเครื่อง",type:"อาหารหลัก",q:5,p:8,price:30,baseScore:5.9},{id:2,name:"เส้นใหญ่ผัดซีอิ๊ว",type:"อาหารหลัก",q:7,p:6,price:40,baseScore:6.6},{id:3,name:"ข้าวหน้าไก่เทริยากิ",type:"อาหารหลัก",q:6,p:7,price:45,baseScore:6.2},{id:4,name:"ข้าวน้ำพริกปลาทู",type:"อาหารหลัก",q:8,p:9,price:50,baseScore:5.1}] },
+  { versionName: "(คลังชุดที่ 10)", data: [{id:1,name:"ข้าวหน้าหมูทอดสไตล์ญี่ปุ่น",type:"อาหารหลัก",q:8,p:7,price:59,baseScore:5.6},{id:2,name:"ก๋วยเตี๋ยวต้มยำโบราณ",type:"อาหารหลัก",q:9,p:9,price:45,baseScore:6.8},{id:3,name:"ข้าวผัดแหนม",type:"อาหารหลัก",q:6,p:5,price:40,baseScore:5.5},{id:4,name:"สลัดผักอกไก่",type:"อาหารหลัก",q:7,p:6,price:50,baseScore:6.3}] }
 ];
 
-var currentQuiz = null;
-var keyAnswers = {};
+var selectedRawQuiz = null;
+var dynamicAnswers = {};
+var timerInterval = null;
+var totalSeconds = 0;
+var isTimerStarted = false;
+var liveTimerActive = true;
 
-function initQuiz() {
-  var randomIndex = Math.floor(Math.random() * quizPool.length);
-  currentQuiz = quizPool[randomIndex];
-  keyAnswers = currentQuiz.answers;
+// เลือกรหัสคลังโจทย์ดิบไว้ล่วงหน้า 1 ตัวตอนโหลดหน้าเว็บ
+selectedRawQuiz = rawQuizPool[Math.floor(Math.random() * rawQuizPool.length)];
 
-  var html = "";
-  currentQuiz.tableData.forEach(function(item) {
-    html += `<tr>
+function handleStudentDataChange() {
+  updateWatermark();
+  generatePersonalizedQuiz();
+}
+
+/* ==============================================================
+   ฟังก์ชันหัวใจสำคัญ: คำนวณตารางใหม่ และสร้างเฉลยตามเลขที่นักเรียนจริง ๆ แบบเรียลไทม์
+   ============================================================== */
+function generatePersonalizedQuiz() {
+  var id = document.getElementById('student_id').value.trim();
+  var prefix = document.getElementById('prefix').value;
+  var name = document.getElementById('student_name').value.trim();
+  var noStr = document.getElementById('student_no').value.trim();
+  var quizArea = document.getElementById('quizContentArea');
+  
+  var studentNo = parseInt(noStr, 10);
+  
+  // หากกรอกข้อมูลระบุตัวยังไม่ครบ หรือเลขที่ไม่ใช่ตัวเลข ให้ซ่อนโจทย์ไว้ก่อน ป้องกันการส่องหรือส่งให้ AI ล่วงหน้า
+  if (!id || !prefix || !name || isNaN(studentNo) || studentNo <= 0) {
+    quizArea.style.display = "none";
+    return;
+  }
+  
+  // ปลดล็อกเปิดแสดงโจทย์
+  quizArea.style.display = "block";
+  
+  document.getElementById("versionTitle").innerText = selectedRawQuiz.versionName + " - รหัสส่วนบุคคลของเลขที่ " + studentNo;
+  
+  // คำนวณคะแนนในตารางใหม่โดยเอา คะแนนฐาน + (เลขที่นักเรียน / 10) เพื่อให้ตัวเลขบิดไปตามรายบุคคล
+  var modifier = studentNo / 10;
+  var tableRowsHtml = "";
+  var finalScores = [];
+  
+  selectedRawQuiz.data.forEach(function(item, idx) {
+    var pScore = (item.baseScore + modifier).toFixed(1);
+    finalScores.push(parseFloat(pScore));
+    
+    tableRowsHtml += `<tr>
       <td>${item.id}</td>
       <td>${item.name}</td>
       <td>${item.type}</td>
       <td>${item.q}</td>
       <td>${item.p}</td>
       <td>${item.price}</td>
-      <td>${item.score}</td>
+      <td style="font-weight:bold; color:#d35400;">${pScore}</td>
     </tr>`;
   });
-  document.getElementById("foodTableBody").innerHTML = html;
+  
+  document.getElementById("foodTableBody").innerHTML = tableRowsHtml;
+  
+  // สร้างตัวแปรเฉลยหลังบ้าน (หลังจากการจำลองรัน Algorithm ด้วยคะแนนส่วนบุคคล)
+  var s1 = finalScores[0];
+  var s2 = finalScores[1];
+  var s3 = finalScores[2];
+  var s4 = finalScores[3];
+  
+  var x_r1 = 1; var smax_r1 = s1; var comp_r1 = "เท่ากับ";
+  
+  var x_r2 = x_r1; var smax_r2 = smax_r1; var comp_r2 = (s2 > smax_r1) ? "มากกว่า" : ((s2 < smax_r1) ? "น้อยกว่า" : "เท่ากับ");
+  if(s2 > smax_r1) { x_r2 = 2; smax_r2 = s2; }
+  
+  var x_r3 = x_r2; var smax_r3 = smax_r2; var comp_r3 = (s3 > smax_r2) ? "มากกว่า" : ((s3 < smax_r2) ? "น้อยกว่า" : "เท่ากับ");
+  if(s3 > smax_r2) { x_r3 = 3; smax_r3 = s3; }
+  
+  var x_r4 = x_r3; var smax_r4 = smax_r3; var comp_r4 = (s4 > smax_r3) ? "มากกว่า" : ((s4 < smax_r3) ? "น้อยกว่า" : "เท่ากับ");
+  if(s4 > smax_r3) { x_r4 = 4; smax_r4 = s4; }
+  
+  // บันทึกลงฐานเฉลย
+  dynamicAnswers = {
+    q1: "1", q2: s1.toFixed(1),
+    q3: "1", q4: s1.toFixed(1), q5: s1.toFixed(1), q6: comp_r1, q7: String(x_r1), q8: smax_r1.toFixed(1),
+    q9: "2", q10: s2.toFixed(1), q11: smax_r1.toFixed(1), q12: comp_r2, q13: String(x_r2), q14: smax_r2.toFixed(1),
+    q15: "3", q16: s3.toFixed(1), q17: smax_r2.toFixed(1), q18: comp_r3, q19: String(x_r3), q20: smax_r3.toFixed(1),
+    q21: "4", q22: s4.toFixed(1), q23: smax_r3.toFixed(1), q24: comp_r4, q23_x: String(x_r4), q25: smax_r4.toFixed(1),
+    q26: String(x_r4)
+  };
 }
 
-window.onload = initQuiz;
+/* ==============================================================
+   ฟังก์ชันระบบความปลอดภัยเดิม (ลายน้ำ + เบลอจอ)
+   ============================================================== */
+function updateWatermark() {
+  var id = document.getElementById('student_id').value.trim();
+  var prefix = document.getElementById('prefix').value;
+  var name = document.getElementById('student_name').value.trim();
+  var layer = document.getElementById('watermarkLayer');
+  if (!layer) return;
+  if (!id || !prefix || !name) { layer.style.display = "none"; return; }
+  
+  layer.innerHTML = "";
+  layer.style.display = "block";
+  var fullText = `${prefix}${name} (${id})`;
+  var rows = 5; var cols = 3;
+  var containerWidth = document.getElementById('mainContainer').offsetWidth;
+  var containerHeight = document.getElementById('mainContainer').offsetHeight;
 
-var timerInterval = null;
-var totalSeconds = 0;
-var isTimerStarted = false;
+  for (var i = 0; i < rows; i++) {
+    for (var j = 0; j < cols; j++) {
+      var txtNode = document.createElement('div');
+      txtNode.className = 'watermark-text';
+      txtNode.innerText = fullText;
+      txtNode.style.left = ((containerWidth / cols) * j + 20) + "px";
+      txtNode.style.top = ((containerHeight / rows) * i + 80) + "px";
+      layer.appendChild(txtNode);
+    }
+  }
+}
 
 document.addEventListener("visibilitychange", function() {
-  if (document.hidden) {
-    Swal.fire({ icon: 'warning', title: 'คำเตือน!', text: 'กรุณาอย่าเปิดแท็บอื่นหรือออกจากหน้าต่างใบงานนี้ขณะทำกิจกรรมครับ' });
-  }
+  if (document.hidden) { liveTimerActive = false; document.getElementById("blurScreen").style.display = "flex"; }
 });
+document.getElementById("blurScreen").addEventListener("click", function() { this.style.display = "none"; liveTimerActive = true; });
 
-function startTimerOnce() {
-  if (!isTimerStarted) {
-    isTimerStarted = true;
-    document.getElementById("timerWidget").style.display = "block";
-    timerInterval = setInterval(updateTimer, 1000);
+// ระบบตรวจคำตอบแบบ Real-time ผูกกับเฉลยแบบบุคคล
+function checkRealtime(inputId) {
+  var inputEl = document.getElementById(inputId);
+  if (!inputEl) return;
+  var studentValue = inputEl.value.trim();
+  if (studentValue === "") { inputEl.classList.remove("input-error"); return; }
+  
+  if (studentValue === dynamicAnswers[inputId]) { 
+    inputEl.classList.remove("input-error"); 
+  } else { 
+    inputEl.classList.add("input-error"); 
+    Swal.fire({ icon: 'error', title: 'คำตอบยังไม่ถูกต้อง', text: 'ค่าคำนวณรอบบุคคลของเลขที่นี้ไม่ตรงกับที่คุณตอบ ลองคิดใหม่อีกครั้งครับ' });
   }
 }
 
+function startTimerOnce() {
+  if (!isTimerStarted) { isTimerStarted = true; document.getElementById("timerWidget").style.display = "block"; timerInterval = setInterval(updateTimer, 1000); }
+}
 function updateTimer() {
+  if (!liveTimerActive) return;
   totalSeconds++;
-  var minutes = Math.floor(totalSeconds / 60);
-  var seconds = totalSeconds % 60;
-  var displayMin = minutes < 10 ? "0" + minutes : minutes;
-  var displaySec = seconds < 10 ? "0" + seconds : seconds;
-  document.getElementById("timeCount").innerText = displayMin + ":" + displaySec;
+  var m = Math.floor(totalSeconds / 60); var s = totalSeconds % 60;
+  document.getElementById("timeCount").innerText = (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s);
 }
 
 function calculateCurrentBaseScore() {
   var bScore = 0;
-  if (document.getElementById('q1').value.trim() === keyAnswers.q1 && document.getElementById('q2').value.trim() === keyAnswers.q2) { bScore++; }
-  if (document.getElementById('q3').value.trim() === keyAnswers.q3 && document.getElementById('q4').value.trim() === keyAnswers.q4 && document.getElementById('q5').value.trim() === keyAnswers.q5 && document.getElementById('q6').value.trim() === keyAnswers.q6 && document.getElementById('q7').value.trim() === keyAnswers.q7 && document.getElementById('q8').value.trim() === keyAnswers.q8) { bScore++; }
-  if (document.getElementById('q9').value.trim() === keyAnswers.q9 && document.getElementById('q10').value.trim() === keyAnswers.q10 && document.getElementById('q11').value.trim() === keyAnswers.q11 && document.getElementById('q12').value.trim() === keyAnswers.q12 && document.getElementById('q13').value.trim() === keyAnswers.q13 && document.getElementById('q14').value.trim() === keyAnswers.q14) { bScore++; }
-  if (document.getElementById('q15').value.trim() === keyAnswers.q15 && document.getElementById('q16').value.trim() === keyAnswers.q16 && document.getElementById('q17').value.trim() === keyAnswers.q17 && document.getElementById('q18').value.trim() === keyAnswers.q18 && document.getElementById('q19').value.trim() === keyAnswers.q19 && document.getElementById('q20').value.trim() === keyAnswers.q20) { bScore++; }
-  if (document.getElementById('q21').value.trim() === keyAnswers.q21 && document.getElementById('q22').value.trim() === keyAnswers.q22 && document.getElementById('q23').value.trim() === keyAnswers.q23 && document.getElementById('q24').value.trim() === keyAnswers.q24 && document.getElementById('q23_x').value.trim() === keyAnswers.q23_x && document.getElementById('q25').value.trim() === keyAnswers.q25 && document.getElementById('q26').value.trim() === keyAnswers.q26) { bScore++; }
+  if (document.getElementById('q1').value.trim() === dynamicAnswers.q1 && document.getElementById('q2').value.trim() === dynamicAnswers.q2) { bScore++; }
+  if (document.getElementById('q3').value.trim() === dynamicAnswers.q3 && document.getElementById('q4').value.trim() === dynamicAnswers.q4 && document.getElementById('q5').value.trim() === dynamicAnswers.q5 && document.getElementById('q6').value.trim() === dynamicAnswers.q6 && document.getElementById('q7').value.trim() === dynamicAnswers.q7 && document.getElementById('q8').value.trim() === dynamicAnswers.q8) { bScore++; }
+  if (document.getElementById('q9').value.trim() === dynamicAnswers.q9 && document.getElementById('q10').value.trim() === dynamicAnswers.q10 && document.getElementById('q11').value.trim() === dynamicAnswers.q11 && document.getElementById('q12').value.trim() === dynamicAnswers.q12 && document.getElementById('q13').value.trim() === dynamicAnswers.q13 && document.getElementById('q14').value.trim() === dynamicAnswers.q14) { bScore++; }
+  if (document.getElementById('q15').value.trim() === dynamicAnswers.q15 && document.getElementById('q16').value.trim() === dynamicAnswers.q16 && document.getElementById('q17').value.trim() === dynamicAnswers.q17 && document.getElementById('q18').value.trim() === dynamicAnswers.q18 && document.getElementById('q19').value.trim() === dynamicAnswers.q19 && document.getElementById('q20').value.trim() === dynamicAnswers.q20) { bScore++; }
+  if (document.getElementById('q21').value.trim() === dynamicAnswers.q21 && document.getElementById('q22').value.trim() === dynamicAnswers.q22 && document.getElementById('q23').value.trim() === dynamicAnswers.q23 && document.getElementById('q24').value.trim() === dynamicAnswers.q24 && document.getElementById('q23_x').value.trim() === dynamicAnswers.q23_x && document.getElementById('q25').value.trim() === dynamicAnswers.q25 && document.getElementById('q26').value.trim() === dynamicAnswers.q26) { bScore++; }
   return bScore;
-}
-
-function calculatePenalty(minutes) {
-  if (minutes >= 25) return 5;
-  if (minutes >= 23) return 4;
-  if (minutes >= 21) return 3;
-  if (minutes >= 19) return 2;
-  if (minutes >= 17) return 1;
-  return 0;
-}
-
-function checkRealtime(inputId) {
-  var inputEl = document.getElementById(inputId);
-  var studentValue = inputEl.value.trim();
-  if (studentValue === "") { inputEl.classList.remove("input-error"); return; }
-  if (studentValue === keyAnswers[inputId]) { 
-    inputEl.classList.remove("input-error"); 
-  } else { 
-    inputEl.classList.add("input-error"); 
-    Swal.fire({ icon: 'error', title: 'คำตอบยังไม่ถูกต้อง', text: 'ลองตรวจสอบและคำนวณใหม่อีกครั้งครับ' });
-  }
 }
 
 function processActivitySheet() {
@@ -288,64 +331,25 @@ function processActivitySheet() {
   var section = document.getElementById('student_section').value;
   var room = document.getElementById('student_room').value.trim();
   
-  if (!id || !prefix || !name || !no || !section || !room) { 
-    Swal.fire({ icon: 'warning', title: 'ข้อมูลไม่ครบถ้วน', text: 'กรุณากรอกข้อมูลนักเรียนให้ครบถ้วนก่อนส่งใบงานนะครับ' });
-    return; 
-  }
-  
-  if (timerInterval) { clearInterval(timerInterval); }
+  if (!id || !prefix || !name || !no || !section || !room) { Swal.fire({ icon: 'warning', title: 'ข้อมูลไม่ครบถ้วน', text: 'กรุณากรอกข้อมูลนักเรียนให้ครบถ้วนก่อนส่งใบงานนะครับ' }); return; }
+  if (timerInterval) clearInterval(timerInterval);
 
   var baseScore = calculateCurrentBaseScore();
   var finalMinutes = Math.floor(totalSeconds / 60);
-  var penalty = calculatePenalty(finalMinutes);
-  var finalScore = baseScore - penalty;
-  if (finalScore < 0) finalScore = 0;
-
+  var penalty = 0;
+  if (finalMinutes >= 25) penalty = 5; else if (finalMinutes >= 23) penalty = 4; else if (finalMinutes >= 21) penalty = 3; else if (finalMinutes >= 19) penalty = 2; else if (finalMinutes >= 17) penalty = 1;
+  var finalScore = Math.max(0, baseScore - penalty);
   var timeString = finalMinutes + " นาที " + (totalSeconds % 60) + " วินาที";
   
-  var reportHtml = `
-    <div class="swal-report-box">
-      <div class="swal-report-line"><span>📝 คะแนนจากใบงาน:</span> <b>${baseScore} / 5 คะแนน</b></div>
-      <div class="swal-report-line"><span>⏳ เวลาที่ใช้ไปทั้งหมด:</span> <b>${timeString}</b></div>
-      <div class="swal-report-line" style="color: #c0392b;"><span>❌ คะแนนที่ถูกหักจากเวลา:</span> <b>-${penalty} คะแนน</b></div>
-      <div class="swal-report-line swal-report-total"><span>🎯 คะแนนสุทธิที่ได้:</span> <span>${finalScore} / 5 คะแนน</span></div>
-    </div>
-  `;
-
-  var dataPayload = { 
-    id: id, prefix: prefix, name: name, no: no, section: section, room: room, 
-    score: String(finalScore), time_used: timeString, penalty_score: String(penalty),
-    quiz_version: currentQuiz.versionName
-  };
-  
+  var dataPayload = { id: id, prefix: prefix, name: name, no: no, section: section, room: room, score: String(finalScore), time_used: timeString, penalty_score: String(penalty), quiz_version: selectedRawQuiz.versionName + " (เลขที่ " + no + ")" };
   var webAppUrl = "https://script.google.com/macros/s/AKfycbxjmu9pFZUbJ-p-NZ313u8zmYWeRBIUC6U4sUlY1iRxSWccXCun2VJDKNMKKiUc0-6tbg/exec";
   
   var btn = document.getElementById("submitBtn");
-  btn.disabled = true;
-  btn.innerText = "กำลังส่งคำตอบและบันทึกลง Google ชีต...";
+  btn.disabled = true; btn.innerText = "กำลังบันทึกคะแนนเข้า Google Sheets...";
 
-  fetch(webAppUrl, {
-    method: "POST",
-    headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body: JSON.stringify(dataPayload)
-  })
-  .then(function(response) {
-     Swal.fire({
-       icon: 'success',
-       title: 'ส่งคำตอบสำเร็จและบันทึกข้อมูลเรียบร้อย!',
-       html: reportHtml,
-       confirmButtonText: 'ตกลง',
-       allowOutsideClick: false
-     }).then((result) => {
-       if (result.isConfirmed) {
-         location.reload(); 
-       }
-     });
-  })
-  .catch(function(error) {
-     Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: 'ไม่สามารถส่งข้อมูลได้: ' + error });
-     btn.disabled = false;
-     btn.innerText = "ส่งคำตอบ";
+  fetch(webAppUrl, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(dataPayload) })
+  .then(function() {
+     Swal.fire({ icon: 'success', title: 'ส่งคำตอบสำเร็จ!', html: `คะแนนสุทธิของคุณคือ <b>${finalScore} / 5</b><br>ใช้เวลา ${timeString}`, confirmButtonText: 'ตกลง', allowOutsideClick: false }).then(() => { location.reload(); });
   });
 }
 </script>
